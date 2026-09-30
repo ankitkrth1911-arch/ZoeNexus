@@ -1,0 +1,9 @@
+fastapi==0.142.0
+uvicorn==0.54.0
+xgboost==3.4.1
+scikit-learn==1.9.1
+pandas==3.0.6
+numpy==2.5.3
+joblib==1.6.0
+google-genai==2.25.0
+pydantic==2.13.5

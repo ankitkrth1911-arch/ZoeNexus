@@ -50,15 +50,29 @@ export const NetworkCanvas: React.FC = () => {
   };
 
   // Node coordinate mappings on SVG grid (700 x 500)
+  // Supports both real backend IDs (PHC_A..PHC_E) and offline mock fallbacks
   const NODE_COORDINATES: Record<string, { x: number; y: number }> = {
-    'PHC-184': { x: 380, y: 150 }, // Shirur (Receiver - Critical)
-    'PHC-072': { x: 520, y: 380 }, // Baramati (Donor - Surplus)
-    'PHC-091': { x: 180, y: 100 }, // Junnar (Tribal - High Risk)
-    'PHC-115': { x: 260, y: 250 }, // Khed (Low/Nominal)
-    'PHC-055': { x: 670, y: 410 }, // Indapur (Surplus)
-    'PHC-204': { x: 190, y: 400 }, // Bhor (Emergency Surge)
-    'PHC-302': { x: 330, y: 440 }, // Haveli (Stale >4h)
+    // Real Backend IDs
+    'PHC_A': { x: 380, y: 150 }, // Alpha (Shirur - Critical Receiver)
+    'PHC_B': { x: 520, y: 380 }, // Beta (Baramati - Surplus Donor)
+    'PHC_C': { x: 180, y: 100 }, // Gamma (Junnar - Tribal Clinic)
+    'PHC_D': { x: 260, y: 250 }, // Delta (Khed - Low/Nominal)
+    'PHC_E': { x: 670, y: 410 }, // Epsilon (Indapur - Regional Surplus)
+    // Offline Mock Fallbacks
+    'PHC-184': { x: 380, y: 150 }, // Shirur
+    'PHC-072': { x: 520, y: 380 }, // Baramati
+    'PHC-091': { x: 180, y: 100 }, // Junnar
+    'PHC-115': { x: 260, y: 250 }, // Khed
+    'PHC-055': { x: 670, y: 410 }, // Indapur
+    'PHC-204': { x: 190, y: 400 }, // Bhor
+    'PHC-302': { x: 330, y: 440 }, // Haveli
   };
+
+  const c1Donor = NODE_COORDINATES['PHC_B'] || NODE_COORDINATES['PHC-072'];
+  const c1Recv = NODE_COORDINATES['PHC_A'] || NODE_COORDINATES['PHC-184'];
+  const c2From = NODE_COORDINATES['PHC_C'] || NODE_COORDINATES['PHC-091'];
+  const c2To = NODE_COORDINATES['PHC_D'] || NODE_COORDINATES['PHC-115'];
+  const c4To = NODE_COORDINATES['PHC_E'] || NODE_COORDINATES['PHC-055'];
 
   return (
     <div className="absolute inset-0 w-full h-full overflow-hidden bg-[var(--paper-50)] select-none">
@@ -101,24 +115,24 @@ export const NetworkCanvas: React.FC = () => {
             </text>
 
             {/* CORRIDORS / HIGHWAYS */}
-            {/* Corridor 1: Baramati (PHC-072) to Shirur (PHC-184) — ACTIVE LP DISPATCH ROUTE */}
+            {/* Corridor 1: Baramati (PHC_B) to Shirur (PHC_A) — ACTIVE LP DISPATCH ROUTE */}
             <g className="cursor-pointer group">
               {/* Outer Glow */}
               <line
-                x1={NODE_COORDINATES['PHC-072'].x}
-                y1={NODE_COORDINATES['PHC-072'].y}
-                x2={NODE_COORDINATES['PHC-184'].x}
-                y2={NODE_COORDINATES['PHC-184'].y}
+                x1={c1Donor.x}
+                y1={c1Donor.y}
+                x2={c1Recv.x}
+                y2={c1Recv.y}
                 stroke="var(--sage-600)"
                 strokeWidth="7"
                 opacity="0.15"
               />
               {/* Animated Dashed Flow Line */}
               <line
-                x1={NODE_COORDINATES['PHC-072'].x}
-                y1={NODE_COORDINATES['PHC-072'].y}
-                x2={NODE_COORDINATES['PHC-184'].x}
-                y2={NODE_COORDINATES['PHC-184'].y}
+                x1={c1Donor.x}
+                y1={c1Donor.y}
+                x2={c1Recv.x}
+                y2={c1Recv.y}
                 stroke="var(--sage-600)"
                 strokeWidth="2.5"
                 strokeDasharray="8 5"
@@ -151,13 +165,13 @@ export const NetworkCanvas: React.FC = () => {
               </g>
             </g>
 
-            {/* Corridor 2: Junnar (PHC-091) to Khed (PHC-115) */}
+            {/* Corridor 2: Junnar (PHC_C) to Khed (PHC_D) */}
             <g>
               <line
-                x1={NODE_COORDINATES['PHC-091'].x}
-                y1={NODE_COORDINATES['PHC-091'].y}
-                x2={NODE_COORDINATES['PHC-115'].x}
-                y2={NODE_COORDINATES['PHC-115'].y}
+                x1={c2From.x}
+                y1={c2From.y}
+                x2={c2To.x}
+                y2={c2To.y}
                 stroke="var(--card-border)"
                 strokeWidth="1.5"
                 strokeDasharray="4 3"
@@ -176,10 +190,10 @@ export const NetworkCanvas: React.FC = () => {
             {/* Corridor 3: Khed to Shirur */}
             <g>
               <line
-                x1={NODE_COORDINATES['PHC-115'].x}
-                y1={NODE_COORDINATES['PHC-115'].y}
-                x2={NODE_COORDINATES['PHC-184'].x}
-                y2={NODE_COORDINATES['PHC-184'].y}
+                x1={c2To.x}
+                y1={c2To.y}
+                x2={c1Recv.x}
+                y2={c1Recv.y}
                 stroke="var(--card-border)"
                 strokeWidth="1.5"
                 strokeDasharray="4 3"
@@ -197,10 +211,10 @@ export const NetworkCanvas: React.FC = () => {
 
             {/* Corridor 4: Baramati to Indapur */}
             <line
-              x1={NODE_COORDINATES['PHC-072'].x}
-              y1={NODE_COORDINATES['PHC-072'].y}
-              x2={NODE_COORDINATES['PHC-055'].x}
-              y2={NODE_COORDINATES['PHC-055'].y}
+              x1={c1Donor.x}
+              y1={c1Donor.y}
+              x2={c4To.x}
+              y2={c4To.y}
               stroke="var(--card-border)"
               strokeWidth="1.5"
             />
@@ -216,10 +230,10 @@ export const NetworkCanvas: React.FC = () => {
 
             {/* Corridor 5: Bhor (Emergency) */}
             <line
-              x1={NODE_COORDINATES['PHC-204'].x}
-              y1={NODE_COORDINATES['PHC-204'].y}
-              x2={NODE_COORDINATES['PHC-072'].x}
-              y2={NODE_COORDINATES['PHC-072'].y}
+              x1={NODE_COORDINATES['PHC-204']?.x ?? 190}
+              y1={NODE_COORDINATES['PHC-204']?.y ?? 400}
+              x2={c1Donor.x}
+              y2={c1Donor.y}
               stroke="var(--status-warning)"
               strokeWidth="1.5"
               strokeDasharray="4 4"

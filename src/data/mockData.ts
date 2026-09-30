@@ -1024,7 +1024,7 @@ export const MOCK_TICKER_FEED: OperationalTickerEvent[] = [
     type: 'federated_round',
     severity: 'healthy',
     district: 'National Grid',
-    message: 'Federated Round #5 converged: Global FedProx Accuracy 95.7% (Differential Privacy ε=1.84 intact).',
+    message: 'Federated Round converged: Global Accuracy (Not yet run; Differential Privacy: Not yet run).',
   },
   {
     id: 'EVT-03',

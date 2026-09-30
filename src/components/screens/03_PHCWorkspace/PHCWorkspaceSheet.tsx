@@ -18,13 +18,13 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { useResilienceStore } from '../../../store/useResilienceStore';
-import { SEEDED_FORECAST_SERIES_PHC184 } from '../../../services/decisionService';
 import { ForecastPanel } from '../../semantic/ForecastPanel';
 import { FreshnessLabel } from '../../semantic/FreshnessLabel';
 
 export const PHCWorkspaceSheet: React.FC = () => {
   const {
     getCurrentPHC,
+    getForecastPoints,
     setScreen,
     openDrawer,
     connectionState,
@@ -32,7 +32,7 @@ export const PHCWorkspaceSheet: React.FC = () => {
   } = useResilienceStore();
 
   const phc = getCurrentPHC();
-  const forecastData = SEEDED_FORECAST_SERIES_PHC184;
+  const forecastData = getForecastPoints(phc.id, phc.primaryMedicine);
 
   const isStale = phc.freshnessMinutes > 240 || connectionState === 'STALE_CRITICAL';
 

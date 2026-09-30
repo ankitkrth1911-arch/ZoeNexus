@@ -1,0 +1,984 @@
+[
+  {
+    "phc_id": "PHC_C",
+    "medicine_id": "Diuretic",
+    "forecast_horizon": "15_days",
+    "predicted_15_day_demand": 1129.28,
+    "current_stock": 1600.0,
+    "safety_stock": 300.0,
+    "expected_shortage": 0.0,
+    "stock_ratio": 1.4168,
+    "risk_level": "LOW",
+    "model_version": "xgb-demand-v2",
+    "generated_at": "2026-09-29T01:41:38.120744",
+    "model_inputs": {
+      "lag_1": 80.433182,
+      "lag_2": 80.125819,
+      "lag_7": 69.042751,
+      "lag_14": 67.273807,
+      "lag_15": 83.625833,
+      "rolling_mean_3": 82.156375,
+      "rolling_mean_7": 74.329019,
+      "rolling_mean_14": 74.232769,
+      "rolling_sum_7": 520.303135,
+      "rolling_sum_14": 1039.258772,
+      "rolling_std_7": 7.750372,
+      "rolling_std_14": 7.099648,
+      "demand_change": 0.307363,
+      "day_of_week": 6.0,
+      "month": 2.0,
+      "day_of_month": 9.0,
+      "day_sin": -0.781831,
+      "day_cos": 0.62349
+    },
+    "top_model_drivers": [
+      {
+        "feature": "rolling_mean_14",
+        "impact": 95.1509,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_sum_14",
+        "impact": 31.9345,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_mean_7",
+        "impact": 29.2951,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "lag_15",
+        "impact": 9.3685,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "month",
+        "impact": 4.2517,
+        "direction": "increases forecast"
+      }
+    ],
+    "risk_reasons": [
+      "Current stock covers predicted demand and safety stock."
+    ],
+    "days_to_stockout": 21.25
+  },
+  {
+    "phc_id": "PHC_C",
+    "medicine_id": "Telmisartan",
+    "forecast_horizon": "15_days",
+    "predicted_15_day_demand": 891.17,
+    "current_stock": 750.0,
+    "safety_stock": 200.0,
+    "expected_shortage": 341.17,
+    "stock_ratio": 0.8416,
+    "risk_level": "HIGH",
+    "model_version": "xgb-demand-v2",
+    "generated_at": "2026-09-29T01:41:38.120744",
+    "model_inputs": {
+      "lag_1": 72.247464,
+      "lag_2": 66.755135,
+      "lag_7": 59.41412,
+      "lag_14": 63.715917,
+      "lag_15": 68.325093,
+      "rolling_mean_3": 67.348869,
+      "rolling_mean_7": 58.925864,
+      "rolling_mean_14": 59.25282,
+      "rolling_sum_7": 412.481045,
+      "rolling_sum_14": 829.539486,
+      "rolling_std_7": 9.423368,
+      "rolling_std_14": 7.881236,
+      "demand_change": 5.492329,
+      "day_of_week": 6.0,
+      "month": 2.0,
+      "day_of_month": 9.0,
+      "day_sin": -0.781831,
+      "day_cos": 0.62349
+    },
+    "top_model_drivers": [
+      {
+        "feature": "rolling_mean_14",
+        "impact": -48.529,
+        "direction": "decreases forecast"
+      },
+      {
+        "feature": "rolling_sum_14",
+        "impact": -17.2276,
+        "direction": "decreases forecast"
+      },
+      {
+        "feature": "rolling_mean_7",
+        "impact": -15.087,
+        "direction": "decreases forecast"
+      },
+      {
+        "feature": "lag_15",
+        "impact": 6.1209,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "day_of_week",
+        "impact": -3.1841,
+        "direction": "decreases forecast"
+      }
+    ],
+    "risk_reasons": [
+      "Current stock is below predicted 15-day demand.",
+      "Current stock does not cover predicted demand plus safety stock.",
+      "Expected shortage is approximately 341.17 units.",
+      "Stock coverage ratio is below 1.0."
+    ],
+    "days_to_stockout": 12.62
+  },
+  {
+    "phc_id": "PHC_B",
+    "medicine_id": "Diuretic",
+    "forecast_horizon": "15_days",
+    "predicted_15_day_demand": 1380.61,
+    "current_stock": 1000.0,
+    "safety_stock": 300.0,
+    "expected_shortage": 680.61,
+    "stock_ratio": 0.7243,
+    "risk_level": "HIGH",
+    "model_version": "xgb-demand-v2",
+    "generated_at": "2026-09-29T01:41:38.120744",
+    "model_inputs": {
+      "lag_1": 95.765637,
+      "lag_2": 108.076275,
+      "lag_7": 89.914367,
+      "lag_14": 91.607497,
+      "lag_15": 90.699866,
+      "rolling_mean_3": 102.840949,
+      "rolling_mean_7": 93.413111,
+      "rolling_mean_14": 92.168092,
+      "rolling_sum_7": 653.891774,
+      "rolling_sum_14": 1290.353283,
+      "rolling_std_7": 9.733361,
+      "rolling_std_14": 8.796316,
+      "demand_change": -12.310638,
+      "day_of_week": 6.0,
+      "month": 2.0,
+      "day_of_month": 9.0,
+      "day_sin": -0.781831,
+      "day_cos": 0.62349
+    },
+    "top_model_drivers": [
+      {
+        "feature": "rolling_mean_14",
+        "impact": 241.3493,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_sum_14",
+        "impact": 86.359,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_mean_7",
+        "impact": 82.9673,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "lag_15",
+        "impact": 9.0393,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_mean_3",
+        "impact": -2.8765,
+        "direction": "decreases forecast"
+      }
+    ],
+    "risk_reasons": [
+      "Current stock is below predicted 15-day demand.",
+      "Current stock does not cover predicted demand plus safety stock.",
+      "Expected shortage is approximately 680.61 units.",
+      "Stock coverage ratio is below 1.0."
+    ],
+    "days_to_stockout": 10.86
+  },
+  {
+    "phc_id": "PHC_B",
+    "medicine_id": "Telmisartan",
+    "forecast_horizon": "15_days",
+    "predicted_15_day_demand": 1078.72,
+    "current_stock": 1200.0,
+    "safety_stock": 250.0,
+    "expected_shortage": 128.72,
+    "stock_ratio": 1.1124,
+    "risk_level": "MEDIUM",
+    "model_version": "xgb-demand-v2",
+    "generated_at": "2026-09-29T01:41:38.120744",
+    "model_inputs": {
+      "lag_1": 75.815044,
+      "lag_2": 82.303294,
+      "lag_7": 70.128053,
+      "lag_14": 77.122669,
+      "lag_15": 83.674848,
+      "rolling_mean_3": 80.622796,
+      "rolling_mean_7": 71.702636,
+      "rolling_mean_14": 71.229158,
+      "rolling_sum_7": 501.918451,
+      "rolling_sum_14": 997.208216,
+      "rolling_std_7": 9.794095,
+      "rolling_std_14": 8.662937,
+      "demand_change": -6.48825,
+      "day_of_week": 6.0,
+      "month": 2.0,
+      "day_of_month": 9.0,
+      "day_sin": -0.781831,
+      "day_cos": 0.62349
+    },
+    "top_model_drivers": [
+      {
+        "feature": "rolling_mean_14",
+        "impact": 61.634,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_sum_14",
+        "impact": 19.6583,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_mean_7",
+        "impact": 19.4437,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "lag_15",
+        "impact": 10.5523,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "day_of_month",
+        "impact": 4.6919,
+        "direction": "increases forecast"
+      }
+    ],
+    "risk_reasons": [
+      "Current stock does not cover predicted demand plus safety stock.",
+      "Expected shortage is approximately 128.72 units."
+    ],
+    "days_to_stockout": 16.69
+  },
+  {
+    "phc_id": "PHC_E",
+    "medicine_id": "Diuretic",
+    "forecast_horizon": "15_days",
+    "predicted_15_day_demand": 1241.95,
+    "current_stock": 1500.0,
+    "safety_stock": 300.0,
+    "expected_shortage": 41.95,
+    "stock_ratio": 1.2078,
+    "risk_level": "MEDIUM",
+    "model_version": "xgb-demand-v2",
+    "generated_at": "2026-09-29T01:41:38.120744",
+    "model_inputs": {
+      "lag_1": 100.921905,
+      "lag_2": 83.960775,
+      "lag_7": 81.625911,
+      "lag_14": 81.919048,
+      "lag_15": 89.887555,
+      "rolling_mean_3": 90.950764,
+      "rolling_mean_7": 83.068313,
+      "rolling_mean_14": 83.484481,
+      "rolling_sum_7": 581.478194,
+      "rolling_sum_14": 1168.78273,
+      "rolling_std_7": 9.675938,
+      "rolling_std_14": 7.94684,
+      "demand_change": 16.96113,
+      "day_of_week": 6.0,
+      "month": 2.0,
+      "day_of_month": 9.0,
+      "day_sin": -0.781831,
+      "day_cos": 0.62349
+    },
+    "top_model_drivers": [
+      {
+        "feature": "rolling_mean_14",
+        "impact": 162.3461,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_sum_14",
+        "impact": 55.9578,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_mean_7",
+        "impact": 50.9418,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "lag_15",
+        "impact": 10.2596,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_mean_3",
+        "impact": -4.2751,
+        "direction": "decreases forecast"
+      }
+    ],
+    "risk_reasons": [
+      "Current stock does not cover predicted demand plus safety stock.",
+      "Expected shortage is approximately 41.95 units."
+    ],
+    "days_to_stockout": 18.12
+  },
+  {
+    "phc_id": "PHC_B",
+    "medicine_id": "Amlodipine",
+    "forecast_horizon": "15_days",
+    "predicted_15_day_demand": 980.53,
+    "current_stock": 700.0,
+    "safety_stock": 200.0,
+    "expected_shortage": 480.53,
+    "stock_ratio": 0.7139,
+    "risk_level": "HIGH",
+    "model_version": "xgb-demand-v2",
+    "generated_at": "2026-09-29T01:41:38.120744",
+    "model_inputs": {
+      "lag_1": 59.4336,
+      "lag_2": 85.129707,
+      "lag_7": 65.285459,
+      "lag_14": 55.992954,
+      "lag_15": 71.364292,
+      "rolling_mean_3": 73.52701,
+      "rolling_mean_7": 65.833924,
+      "rolling_mean_14": 63.652777,
+      "rolling_sum_7": 460.837468,
+      "rolling_sum_14": 891.138876,
+      "rolling_std_7": 11.965491,
+      "rolling_std_14": 10.123308,
+      "demand_change": -25.696107,
+      "day_of_week": 6.0,
+      "month": 2.0,
+      "day_of_month": 9.0,
+      "day_sin": -0.781831,
+      "day_cos": 0.62349
+    },
+    "top_model_drivers": [
+      {
+        "feature": "rolling_std_14",
+        "impact": 7.9244,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_mean_14",
+        "impact": -7.8111,
+        "direction": "decreases forecast"
+      },
+      {
+        "feature": "lag_15",
+        "impact": 6.0863,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "day_of_month",
+        "impact": 5.8147,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_sum_14",
+        "impact": -3.2218,
+        "direction": "decreases forecast"
+      }
+    ],
+    "risk_reasons": [
+      "Current stock is below predicted 15-day demand.",
+      "Current stock does not cover predicted demand plus safety stock.",
+      "Expected shortage is approximately 480.53 units.",
+      "Stock coverage ratio is below 1.0."
+    ],
+    "days_to_stockout": 10.71
+  },
+  {
+    "phc_id": "PHC_D",
+    "medicine_id": "Diuretic",
+    "forecast_horizon": "15_days",
+    "predicted_15_day_demand": 1404.19,
+    "current_stock": 1800.0,
+    "safety_stock": 300.0,
+    "expected_shortage": 0.0,
+    "stock_ratio": 1.2819,
+    "risk_level": "LOW",
+    "model_version": "xgb-demand-v2",
+    "generated_at": "2026-09-29T01:41:38.120744",
+    "model_inputs": {
+      "lag_1": 99.296393,
+      "lag_2": 92.502136,
+      "lag_7": 86.744919,
+      "lag_14": 95.04214,
+      "lag_15": 87.123241,
+      "rolling_mean_3": 97.98021,
+      "rolling_mean_7": 94.974696,
+      "rolling_mean_14": 94.387876,
+      "rolling_sum_7": 664.822872,
+      "rolling_sum_14": 1321.43027,
+      "rolling_std_7": 6.175679,
+      "rolling_std_14": 6.520998,
+      "demand_change": 6.794257,
+      "day_of_week": 6.0,
+      "month": 2.0,
+      "day_of_month": 9.0,
+      "day_sin": -0.781831,
+      "day_cos": 0.62349
+    },
+    "top_model_drivers": [
+      {
+        "feature": "rolling_mean_14",
+        "impact": 258.4186,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_sum_14",
+        "impact": 89.8344,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_mean_7",
+        "impact": 86.5003,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "lag_15",
+        "impact": 8.0571,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_std_14",
+        "impact": -3.2265,
+        "direction": "decreases forecast"
+      }
+    ],
+    "risk_reasons": [
+      "Current stock covers predicted demand and safety stock."
+    ],
+    "days_to_stockout": 19.23
+  },
+  {
+    "phc_id": "PHC_C",
+    "medicine_id": "Amlodipine",
+    "forecast_horizon": "15_days",
+    "predicted_15_day_demand": 777.34,
+    "current_stock": 1000.0,
+    "safety_stock": 200.0,
+    "expected_shortage": 0.0,
+    "stock_ratio": 1.2864,
+    "risk_level": "LOW",
+    "model_version": "xgb-demand-v2",
+    "generated_at": "2026-09-29T01:41:38.120744",
+    "model_inputs": {
+      "lag_1": 50.442466,
+      "lag_2": 56.734977,
+      "lag_7": 51.810111,
+      "lag_14": 41.398769,
+      "lag_15": 57.793086,
+      "rolling_mean_3": 56.763105,
+      "rolling_mean_7": 50.054487,
+      "rolling_mean_14": 51.446922,
+      "rolling_sum_7": 350.381407,
+      "rolling_sum_14": 720.256906,
+      "rolling_std_7": 9.196173,
+      "rolling_std_14": 8.472951,
+      "demand_change": -6.292511,
+      "day_of_week": 6.0,
+      "month": 2.0,
+      "day_of_month": 9.0,
+      "day_sin": -0.781831,
+      "day_cos": 0.62349
+    },
+    "top_model_drivers": [
+      {
+        "feature": "rolling_mean_14",
+        "impact": -112.4457,
+        "direction": "decreases forecast"
+      },
+      {
+        "feature": "rolling_sum_14",
+        "impact": -41.3144,
+        "direction": "decreases forecast"
+      },
+      {
+        "feature": "rolling_mean_7",
+        "impact": -38.7762,
+        "direction": "decreases forecast"
+      },
+      {
+        "feature": "day_sin",
+        "impact": -1.867,
+        "direction": "decreases forecast"
+      },
+      {
+        "feature": "day_of_week",
+        "impact": -1.7385,
+        "direction": "decreases forecast"
+      }
+    ],
+    "risk_reasons": [
+      "Current stock covers predicted demand and safety stock."
+    ],
+    "days_to_stockout": 19.3
+  },
+  {
+    "phc_id": "PHC_A",
+    "medicine_id": "Telmisartan",
+    "forecast_horizon": "15_days",
+    "predicted_15_day_demand": 962.66,
+    "current_stock": 900.0,
+    "safety_stock": 250.0,
+    "expected_shortage": 312.66,
+    "stock_ratio": 0.9349,
+    "risk_level": "HIGH",
+    "model_version": "xgb-demand-v2",
+    "generated_at": "2026-09-29T01:41:38.120744",
+    "model_inputs": {
+      "lag_1": 72.613037,
+      "lag_2": 69.485837,
+      "lag_7": 66.036562,
+      "lag_14": 64.196714,
+      "lag_15": 73.82992,
+      "rolling_mean_3": 68.755145,
+      "rolling_mean_7": 63.704359,
+      "rolling_mean_14": 63.938855,
+      "rolling_sum_7": 445.930512,
+      "rolling_sum_14": 895.143965,
+      "rolling_std_7": 6.513193,
+      "rolling_std_14": 8.441246,
+      "demand_change": 3.1272,
+      "day_of_week": 6.0,
+      "month": 2.0,
+      "day_of_month": 9.0,
+      "day_sin": -0.781831,
+      "day_cos": 0.62349
+    },
+    "top_model_drivers": [
+      {
+        "feature": "rolling_mean_14",
+        "impact": -9.6947,
+        "direction": "decreases forecast"
+      },
+      {
+        "feature": "lag_15",
+        "impact": 7.4333,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "day_of_week",
+        "impact": -3.1347,
+        "direction": "decreases forecast"
+      },
+      {
+        "feature": "day_of_month",
+        "impact": 2.5403,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "month",
+        "impact": 2.4794,
+        "direction": "increases forecast"
+      }
+    ],
+    "risk_reasons": [
+      "Current stock is below predicted 15-day demand.",
+      "Current stock does not cover predicted demand plus safety stock.",
+      "Expected shortage is approximately 312.66 units.",
+      "Stock coverage ratio is below 1.0."
+    ],
+    "days_to_stockout": 14.02
+  },
+  {
+    "phc_id": "PHC_D",
+    "medicine_id": "Telmisartan",
+    "forecast_horizon": "15_days",
+    "predicted_15_day_demand": 1172.88,
+    "current_stock": 1000.0,
+    "safety_stock": 250.0,
+    "expected_shortage": 422.88,
+    "stock_ratio": 0.8526,
+    "risk_level": "HIGH",
+    "model_version": "xgb-demand-v2",
+    "generated_at": "2026-09-29T01:41:38.120744",
+    "model_inputs": {
+      "lag_1": 84.736969,
+      "lag_2": 84.339278,
+      "lag_7": 72.108387,
+      "lag_14": 76.866704,
+      "lag_15": 84.28478,
+      "rolling_mean_3": 85.129753,
+      "rolling_mean_7": 77.815387,
+      "rolling_mean_14": 79.059089,
+      "rolling_sum_7": 544.707708,
+      "rolling_sum_14": 1106.827242,
+      "rolling_std_7": 7.433578,
+      "rolling_std_14": 6.563691,
+      "demand_change": 0.397691,
+      "day_of_week": 6.0,
+      "month": 2.0,
+      "day_of_month": 9.0,
+      "day_sin": -0.781831,
+      "day_cos": 0.62349
+    },
+    "top_model_drivers": [
+      {
+        "feature": "rolling_mean_14",
+        "impact": 123.2474,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_sum_14",
+        "impact": 44.375,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_mean_7",
+        "impact": 36.4842,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "lag_15",
+        "impact": 9.2242,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "lag_1",
+        "impact": -3.87,
+        "direction": "decreases forecast"
+      }
+    ],
+    "risk_reasons": [
+      "Current stock is below predicted 15-day demand.",
+      "Current stock does not cover predicted demand plus safety stock.",
+      "Expected shortage is approximately 422.88 units.",
+      "Stock coverage ratio is below 1.0."
+    ],
+    "days_to_stockout": 12.79
+  },
+  {
+    "phc_id": "PHC_A",
+    "medicine_id": "Diuretic",
+    "forecast_horizon": "15_days",
+    "predicted_15_day_demand": 1214.97,
+    "current_stock": 1500.0,
+    "safety_stock": 300.0,
+    "expected_shortage": 14.97,
+    "stock_ratio": 1.2346,
+    "risk_level": "MEDIUM",
+    "model_version": "xgb-demand-v2",
+    "generated_at": "2026-09-29T01:41:38.120744",
+    "model_inputs": {
+      "lag_1": 84.744688,
+      "lag_2": 91.281884,
+      "lag_7": 72.06735,
+      "lag_14": 66.667655,
+      "lag_15": 84.511357,
+      "rolling_mean_3": 89.48433,
+      "rolling_mean_7": 81.553259,
+      "rolling_mean_14": 80.969807,
+      "rolling_sum_7": 570.872816,
+      "rolling_sum_14": 1133.577292,
+      "rolling_std_7": 8.261218,
+      "rolling_std_14": 9.616553,
+      "demand_change": -6.537196,
+      "day_of_week": 6.0,
+      "month": 2.0,
+      "day_of_month": 9.0,
+      "day_sin": -0.781831,
+      "day_cos": 0.62349
+    },
+    "top_model_drivers": [
+      {
+        "feature": "rolling_mean_14",
+        "impact": 142.8063,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_sum_14",
+        "impact": 51.164,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_mean_7",
+        "impact": 50.388,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "lag_15",
+        "impact": 9.8809,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_mean_3",
+        "impact": -3.3582,
+        "direction": "decreases forecast"
+      }
+    ],
+    "risk_reasons": [
+      "Current stock does not cover predicted demand plus safety stock.",
+      "Expected shortage is approximately 14.97 units."
+    ],
+    "days_to_stockout": 18.52
+  },
+  {
+    "phc_id": "PHC_E",
+    "medicine_id": "Amlodipine",
+    "forecast_horizon": "15_days",
+    "predicted_15_day_demand": 845.02,
+    "current_stock": 900.0,
+    "safety_stock": 200.0,
+    "expected_shortage": 145.02,
+    "stock_ratio": 1.0651,
+    "risk_level": "MEDIUM",
+    "model_version": "xgb-demand-v2",
+    "generated_at": "2026-09-29T01:41:38.120744",
+    "model_inputs": {
+      "lag_1": 64.504159,
+      "lag_2": 60.347947,
+      "lag_7": 47.803032,
+      "lag_14": 52.543559,
+      "lag_15": 61.61645,
+      "rolling_mean_3": 62.602742,
+      "rolling_mean_7": 54.928797,
+      "rolling_mean_14": 57.15857,
+      "rolling_sum_7": 384.501577,
+      "rolling_sum_14": 800.219987,
+      "rolling_std_7": 7.4939,
+      "rolling_std_14": 7.810062,
+      "demand_change": 4.156211,
+      "day_of_week": 6.0,
+      "month": 2.0,
+      "day_of_month": 9.0,
+      "day_sin": -0.781831,
+      "day_cos": 0.62349
+    },
+    "top_model_drivers": [
+      {
+        "feature": "rolling_mean_14",
+        "impact": -65.8784,
+        "direction": "decreases forecast"
+      },
+      {
+        "feature": "rolling_mean_7",
+        "impact": -26.6208,
+        "direction": "decreases forecast"
+      },
+      {
+        "feature": "rolling_sum_14",
+        "impact": -23.1381,
+        "direction": "decreases forecast"
+      },
+      {
+        "feature": "lag_15",
+        "impact": -3.3683,
+        "direction": "decreases forecast"
+      },
+      {
+        "feature": "day_of_week",
+        "impact": -3.0572,
+        "direction": "decreases forecast"
+      }
+    ],
+    "risk_reasons": [
+      "Current stock does not cover predicted demand plus safety stock.",
+      "Expected shortage is approximately 145.02 units."
+    ],
+    "days_to_stockout": 15.98
+  },
+  {
+    "phc_id": "PHC_A",
+    "medicine_id": "Amlodipine",
+    "forecast_horizon": "15_days",
+    "predicted_15_day_demand": 776.18,
+    "current_stock": 1200.0,
+    "safety_stock": 250.0,
+    "expected_shortage": 0.0,
+    "stock_ratio": 1.546,
+    "risk_level": "LOW",
+    "model_version": "xgb-demand-v2",
+    "generated_at": "2026-09-29T01:41:38.120744",
+    "model_inputs": {
+      "lag_1": 58.062513,
+      "lag_2": 57.784543,
+      "lag_7": 39.179533,
+      "lag_14": 51.869452,
+      "lag_15": 51.007194,
+      "rolling_mean_3": 59.679665,
+      "rolling_mean_7": 52.620859,
+      "rolling_mean_14": 52.549373,
+      "rolling_sum_7": 368.346014,
+      "rolling_sum_14": 735.691223,
+      "rolling_std_7": 9.746367,
+      "rolling_std_14": 7.359191,
+      "demand_change": 0.277971,
+      "day_of_week": 6.0,
+      "month": 2.0,
+      "day_of_month": 9.0,
+      "day_sin": -0.781831,
+      "day_cos": 0.62349
+    },
+    "top_model_drivers": [
+      {
+        "feature": "rolling_mean_14",
+        "impact": -112.6123,
+        "direction": "decreases forecast"
+      },
+      {
+        "feature": "rolling_sum_14",
+        "impact": -40.3052,
+        "direction": "decreases forecast"
+      },
+      {
+        "feature": "rolling_mean_7",
+        "impact": -34.2781,
+        "direction": "decreases forecast"
+      },
+      {
+        "feature": "lag_15",
+        "impact": -6.3757,
+        "direction": "decreases forecast"
+      },
+      {
+        "feature": "lag_7",
+        "impact": 4.6856,
+        "direction": "increases forecast"
+      }
+    ],
+    "risk_reasons": [
+      "Current stock covers predicted demand and safety stock."
+    ],
+    "days_to_stockout": 23.19
+  },
+  {
+    "phc_id": "PHC_D",
+    "medicine_id": "Amlodipine",
+    "forecast_horizon": "15_days",
+    "predicted_15_day_demand": 982.99,
+    "current_stock": 1400.0,
+    "safety_stock": 250.0,
+    "expected_shortage": 0.0,
+    "stock_ratio": 1.4242,
+    "risk_level": "LOW",
+    "model_version": "xgb-demand-v2",
+    "generated_at": "2026-09-29T01:41:38.120744",
+    "model_inputs": {
+      "lag_1": 70.770525,
+      "lag_2": 76.49911,
+      "lag_7": 58.044324,
+      "lag_14": 57.915989,
+      "lag_15": 65.769118,
+      "rolling_mean_3": 72.355225,
+      "rolling_mean_7": 63.297675,
+      "rolling_mean_14": 66.026578,
+      "rolling_sum_7": 443.083725,
+      "rolling_sum_14": 924.372085,
+      "rolling_std_7": 9.612818,
+      "rolling_std_14": 9.031218,
+      "demand_change": -5.728585,
+      "day_of_week": 6.0,
+      "month": 2.0,
+      "day_of_month": 9.0,
+      "day_sin": -0.781831,
+      "day_cos": 0.62349
+    },
+    "top_model_drivers": [
+      {
+        "feature": "rolling_mean_14",
+        "impact": 14.867,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_sum_14",
+        "impact": 5.8399,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_mean_3",
+        "impact": -4.7706,
+        "direction": "decreases forecast"
+      },
+      {
+        "feature": "day_of_month",
+        "impact": 3.5008,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "day_of_week",
+        "impact": -2.5086,
+        "direction": "decreases forecast"
+      }
+    ],
+    "risk_reasons": [
+      "Current stock covers predicted demand and safety stock."
+    ],
+    "days_to_stockout": 21.36
+  },
+  {
+    "phc_id": "PHC_E",
+    "medicine_id": "Telmisartan",
+    "forecast_horizon": "15_days",
+    "predicted_15_day_demand": 1020.44,
+    "current_stock": 800.0,
+    "safety_stock": 250.0,
+    "expected_shortage": 470.44,
+    "stock_ratio": 0.784,
+    "risk_level": "HIGH",
+    "model_version": "xgb-demand-v2",
+    "generated_at": "2026-09-29T01:41:38.120744",
+    "model_inputs": {
+      "lag_1": 70.698768,
+      "lag_2": 77.382708,
+      "lag_7": 65.714222,
+      "lag_14": 62.707058,
+      "lag_15": 65.858117,
+      "rolling_mean_3": 73.015993,
+      "rolling_mean_7": 68.497795,
+      "rolling_mean_14": 68.274099,
+      "rolling_sum_7": 479.484568,
+      "rolling_sum_14": 955.837389,
+      "rolling_std_7": 6.744731,
+      "rolling_std_14": 6.263007,
+      "demand_change": -6.68394,
+      "day_of_week": 6.0,
+      "month": 2.0,
+      "day_of_month": 9.0,
+      "day_sin": -0.781831,
+      "day_cos": 0.62349
+    },
+    "top_model_drivers": [
+      {
+        "feature": "rolling_mean_14",
+        "impact": 36.2091,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_sum_14",
+        "impact": 11.2488,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_mean_7",
+        "impact": 10.8388,
+        "direction": "increases forecast"
+      },
+      {
+        "feature": "rolling_mean_3",
+        "impact": -2.8602,
+        "direction": "decreases forecast"
+      },
+      {
+        "feature": "day_of_week",
+        "impact": -2.7719,
+        "direction": "decreases forecast"
+      }
+    ],
+    "risk_reasons": [
+      "Current stock is below predicted 15-day demand.",
+      "Current stock does not cover predicted demand plus safety stock.",
+      "Expected shortage is approximately 470.44 units.",
+      "Stock coverage ratio is below 1.0."
+    ],
+    "days_to_stockout": 11.76
+  }
+]

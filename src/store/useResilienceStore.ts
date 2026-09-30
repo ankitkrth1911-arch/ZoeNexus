@@ -13,6 +13,7 @@ import {
   GeminiExplanation,
   FederationRoundState,
   EmergencySurgeState,
+  ForecastPoint,
 } from '../types/decision';
 import {
   DecisionService,
@@ -20,6 +21,8 @@ import {
   SEEDED_FEDERATION_STATE,
   SEEDED_EMERGENCY_STATE,
 } from '../services/decisionService';
+import { fetchAllForecasts, fetchMetrics, BackendForecast, BackendMetric } from '../services/apiService';
+import { adaptForecastToPoints } from '../services/backendAdapter';
 
 export interface ToastMessage {
   id: string;
@@ -66,10 +69,22 @@ interface ResilienceState {
   approveAllocation: (officerNote?: string) => { success: boolean; reason?: string };
   rejectAllocation: (reason: string) => void;
 
+  // Live backend data (hydrated by initBackendData on mount)
+  livePhcList: PHCNodeData[] | null;
+  liveRiskList: RiskRadarItem[] | null;
+  rawForecasts: BackendForecast[] | null;
+  metrics: BackendMetric[] | null;
+  bestModel: string;
+  dataLabel: string;               // e.g. 'Simulated data' or 'Offline demo data'
+  isLiveData: boolean;             // true = from FastAPI backend
+  isLoadingBackend: boolean;
+  initBackendData: () => Promise<void>;
+
   // Data Queries
   getPHCList: () => PHCNodeData[];
   getCurrentPHC: () => PHCNodeData;
   getRiskRadarList: () => RiskRadarItem[];
+  getForecastPoints: (phcId?: string, medicineId?: string) => ForecastPoint[];
   getDonorsList: () => DonorCandidate[];
   getRecommendation: () => SolverRecommendation;
   getGeminiExplanation: () => GeminiExplanation | null;
@@ -153,11 +168,11 @@ export const useResilienceStore = create<ResilienceState>((set, get) => ({
 
   selectedState: 'Maharashtra',
   selectedDistrict: 'DIST-PUN',
-  selectedPHCId: 'PHC-184',
-  selectedMedicineCode: 'MED-AMX-500',
+  selectedPHCId: 'PHC_A',
+  selectedMedicineCode: 'AMLODIPINE',
   setSelectedPHCId: (id) => {
     set({ selectedPHCId: id });
-    const phc = DecisionService.getPHC(id, get().connectionState);
+    const phc = get().getCurrentPHC();
     if (phc) {
       set({ selectedMedicineCode: phc.primaryMedicineCode });
     }
@@ -255,6 +270,8 @@ export const useResilienceStore = create<ResilienceState>((set, get) => ({
     }
 
     // Success: Commit to Audit Trail with SHA-256 hash
+    const rec = get().getRecommendation();
+    const curPHC = get().getCurrentPHC();
     const newAuditEvent: AuditEvent = {
       id: `AUD-${Date.now().toString().slice(-4)}`,
       timestamp: new Date().toISOString(),
@@ -264,7 +281,7 @@ export const useResilienceStore = create<ResilienceState>((set, get) => ({
       action: 'APPROVE_ALLOCATION_ORDER',
       stateHash: DecisionService.generateHash(`approved-${selectedPHCId}-${Date.now()}`),
       modelVersion: 'v75.4-fedxgb-dp',
-      payloadSummary: `Transfer order #DSP-${Date.now().toString().slice(-6)} committed: 420 units Amoxicillin from PHC 072 to ${selectedPHCId}. ${officerNote || 'Corridor verified via NH-48.'}`,
+      payloadSummary: `Transfer order #DSP-${Date.now().toString().slice(-6)} committed: ${rec.transferQuantity} units ${curPHC.primaryMedicine || 'Amlodipine'} from ${rec.donorId} to ${selectedPHCId}. ${officerNote || 'Corridor verified via NH-48.'}`,
       status: 'COMMITTED'
     };
 
@@ -310,13 +327,94 @@ export const useResilienceStore = create<ResilienceState>((set, get) => ({
     });
   },
 
-  // Data Queries
-  getPHCList: () => DecisionService.getPHCNodes(get().connectionState),
+  // Live backend state
+  livePhcList: null,
+  liveRiskList: null,
+  rawForecasts: null,
+  metrics: [
+    { model: 'XGBoost', mae: 21.67, rmse: 27.54, mae_raw: 21.67079361167494, rmse_raw: 27.541215818663826 },
+    { model: 'Moving Average 7D', mae: 27.39, rmse: 34.27, mae_raw: 27.39388435338817, rmse_raw: 34.26861213430817 },
+    { model: 'Seasonal Naive 7D', mae: 91.85, rmse: 111.81, mae_raw: 91.84555539378803, rmse_raw: 111.81010325298111 },
+    { model: 'Naive', mae: 95.61, rmse: 116.07, mae_raw: 95.61254273577697, rmse_raw: 116.07467267004093 },
+  ],
+  bestModel: 'XGBoost',
+  dataLabel: 'Offline demo data',
+  isLiveData: false,
+  isLoadingBackend: false,
+
+  initBackendData: async () => {
+    set({ isLoadingBackend: true });
+    try {
+      const [forecastResult, metricsResult] = await Promise.all([
+        fetchAllForecasts(),
+        fetchMetrics(),
+      ]);
+      set({
+        livePhcList: forecastResult.phcList,
+        liveRiskList: forecastResult.riskList,
+        rawForecasts: forecastResult.rawForecasts ?? null,
+        metrics: metricsResult.data?.metrics ?? get().metrics,
+        bestModel: metricsResult.data?.best_model ?? 'XGBoost',
+        dataLabel: forecastResult.dataLabel,
+        isLiveData: forecastResult.isLive,
+        isLoadingBackend: false,
+        // Set default selection to first PHC if available
+        selectedPHCId: forecastResult.phcList.length > 0 ? forecastResult.phcList[0].id : get().selectedPHCId,
+      });
+      get().addToast({
+        type: forecastResult.isLive ? 'success' : 'info',
+        title: forecastResult.isLive ? 'Live Backend Connected' : 'Offline Demo Mode',
+        detail: forecastResult.isLive
+          ? `${forecastResult.dataLabel}: ${forecastResult.phcList.length} PHCs loaded. Real ML metrics loaded from /metrics.`
+          : 'Backend not reachable. Showing seeded demo data.',
+      });
+    } catch (err) {
+      console.error('[store] initBackendData failed:', err);
+      set({ isLoadingBackend: false });
+    }
+  },
+
+  getPHCList: () => {
+    const { livePhcList, connectionState } = get();
+    const base = livePhcList ?? DecisionService.getPHCNodes(connectionState);
+    if (connectionState === 'STALE_CRITICAL') {
+      return base.map((p) =>
+        p.id === 'PHC_A' || p.id === 'PHC-184'
+          ? { ...p, freshnessMinutes: 284, status: 'STALE' as const }
+          : p
+      );
+    }
+    return base;
+  },
   getCurrentPHC: () => {
-    const { selectedPHCId, connectionState } = get();
+    const { selectedPHCId, connectionState, livePhcList } = get();
+    if (livePhcList) {
+      return livePhcList.find((p) => p.id === selectedPHCId) ?? livePhcList[0];
+    }
     return DecisionService.getPHC(selectedPHCId, connectionState) || DecisionService.getPHCNodes(connectionState)[0];
   },
-  getRiskRadarList: () => DecisionService.getRiskRadar(get().connectionState),
+  getRiskRadarList: () => {
+    const { liveRiskList, connectionState } = get();
+    return liveRiskList ?? DecisionService.getRiskRadar(connectionState);
+  },
+  getForecastPoints: (phcId?: string, medicineId?: string) => {
+    const targetPHC = phcId ?? get().selectedPHCId;
+    const targetMed = medicineId ?? get().getCurrentPHC()?.primaryMedicine ?? 'Amlodipine';
+    const raw = get().rawForecasts;
+    if (raw && raw.length > 0) {
+      const match =
+        raw.find(
+          (f) =>
+            f.phc_id.toLowerCase() === targetPHC.toLowerCase() &&
+            (f.medicine_id.toLowerCase() === targetMed.toLowerCase() ||
+              targetMed.toLowerCase().includes(f.medicine_id.toLowerCase()))
+        ) || raw.find((f) => f.phc_id.toLowerCase() === targetPHC.toLowerCase());
+      if (match) {
+        return adaptForecastToPoints(match);
+      }
+    }
+    return DecisionService.getForecast(targetPHC);
+  },
   getDonorsList: () => DecisionService.getDonors(get().selectedPHCId, get().connectionState),
   getRecommendation: () => DecisionService.getRecommendation(get().selectedPHCId, get().connectionState),
   getGeminiExplanation: () => DecisionService.getGeminiExplanation(get().selectedPHCId, get().connectionState),
@@ -327,33 +425,10 @@ export const useResilienceStore = create<ResilienceState>((set, get) => ({
   // Federation Dynamic State
   federationState: SEEDED_FEDERATION_STATE,
   triggerFederationRound: () => {
-    const cur = get().federationState;
-    const nextRound = cur.currentRound + 1;
-    const nextDelta = Number((cur.convergenceDelta * 0.85).toFixed(4));
-    const nextAccuracy = Math.min(98.8, Number((cur.globalAccuracyPct + 0.3).toFixed(1)));
-    const nextEpsilon = Number((cur.epsilonBudgetConsumed + 0.12).toFixed(2));
-
-    const updatedState: FederationRoundState = {
-      ...cur,
-      currentRound: nextRound,
-      convergenceDelta: nextDelta,
-      globalAccuracyPct: nextAccuracy,
-      epsilonBudgetConsumed: nextEpsilon,
-      globalModelVersion: `v${nextRound}.1-fedxgb-dp`,
-      lastAggregatedAt: new Date().toISOString(),
-      clients: cur.clients.map((c, i) => ({
-        ...c,
-        status: i === 4 && nextRound % 2 === 0 ? 'Offline' : 'Complete',
-        localAccuracy: Math.min(98.5, Number((c.localAccuracy + 0.2).toFixed(1))),
-        lastRoundLoss: Number((c.lastRoundLoss * 0.9).toFixed(3))
-      }))
-    };
-
-    set({ federationState: updatedState });
     get().addToast({
-      type: 'success',
-      title: `Federation Round ${nextRound} Complete`,
-      detail: `Aggregated 4 edge client gradients without pooling local patient records. Global accuracy: ${nextAccuracy}%.`
+      type: 'info',
+      title: 'Federated Round: Not yet run',
+      detail: 'Edge training rounds require decentralized peripheral node deployment. Federated metrics: Not yet run.'
     });
   },
 
@@ -405,16 +480,16 @@ export const useResilienceStore = create<ResilienceState>((set, get) => ({
     // Automatically switch screens and layers based on walkthrough step
     switch (step) {
       case 0: // Scan: Network Pulse (Canvas + Drawer)
-        set({ screen: 'pulse', isDrawerOpen: true, selectedPHCId: 'PHC-184', isRiskTrayOpen: false });
+        set({ screen: 'pulse', isDrawerOpen: true, selectedPHCId: 'PHC_A', isRiskTrayOpen: false });
         break;
       case 1: // Spot: Risk Radar (Slide-up Tray)
         set({ screen: 'risks', isRiskTrayOpen: true });
         break;
       case 2: // Understand: PHC Workspace (Overlay Sheet)
-        set({ screen: 'phc', selectedPHCId: 'PHC-184', isRiskTrayOpen: false });
+        set({ screen: 'phc', selectedPHCId: 'PHC_A', isRiskTrayOpen: false });
         break;
       case 3: // Act: Resolve Shortage Drawer (Signature Decision Surface)
-        set({ screen: 'resolve', selectedPHCId: 'PHC-184', isDrawerOpen: true, isRiskTrayOpen: false });
+        set({ screen: 'resolve', selectedPHCId: 'PHC_A', isDrawerOpen: true, isRiskTrayOpen: false });
         break;
       case 4: // Verifiable Constraints
         set({ screen: 'resolve', isDrawerOpen: true, isRiskTrayOpen: false });

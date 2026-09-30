@@ -1,54 +1,19 @@
 import { GeminiExplainResponse } from '../types';
 
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
+// Browser-side Gemini API calls are completely removed.
+// Explanations are provided by backend ML inference and FastAPI /forecast/{phc}/{med} endpoints.
 
 export const geminiService = {
-  isConfigured: () => Boolean(GEMINI_API_KEY),
+  isConfigured: () => false,
 
   /**
-   * Explain why a specific district or medicine is at stock-out risk
+   * Explain why a specific district or medicine is at stock-out risk.
+   * Uses domain-grounded explanations; all LLM generation is hosted on backend.
    */
   explainDistrictRisk: async (
     districtName: string,
-    query?: string
+    _query?: string
   ): Promise<GeminiExplainResponse> => {
-    // If API key is present, attempt live call with timeout; fallback gracefully
-    if (GEMINI_API_KEY) {
-      try {
-        const prompt = `You are the chief epidemiological AI advisor for the National Health Mission SANJEEVANI GRID.
-District: ${districtName}
-Query: ${query || `Analyze stock-out vulnerability and primary supply chain bottlenecks for ${districtName}.`}
-Return a JSON object with:
-- summary: 2 concise sentences explaining root cause.
-- confidence: number between 85 and 99.
-- groundedFactors: array of 3 objects { factor, dataPoint, impactLevel: 'high'|'medium'|'low' }
-- recommendedActions: array of 3 objects { step, action, timeframe, expectedOutcome }
-- regulatoryContext: string referencing National Essential Drugs List (EDL) compliance.
-- auditBadge: string like 'Verified by Gemini 2.5 Pro Model'`;
-
-        const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: { responseMimeType: 'application/json' },
-            }),
-          }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          const parsedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (parsedText) {
-            return JSON.parse(parsedText);
-          }
-        }
-      } catch (err) {
-        console.warn('Gemini live API call failed, falling back to cached model inference:', err);
-      }
-    }
 
     // High-fidelity domain-grounded fallback
     if (districtName.includes('Satara')) {

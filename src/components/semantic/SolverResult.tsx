@@ -15,23 +15,25 @@ export const SolverResult: React.FC<SolverResultProps> = ({
 }) => {
   return (
     <div
-      className={`p-3.5 rounded-lg border border-[var(--sage-600)]/40 bg-[var(--sage-50)] text-xs shadow-xs space-y-3 ${className}`}
+      className={`p-3.5 rounded-lg border border-[var(--card-border)] bg-[var(--paper-50)] text-xs shadow-xs space-y-3 ${className}`}
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
-          <Truck className="w-4 h-4 text-[var(--sage-700)]" />
-          <span className="font-heading font-bold text-xs uppercase tracking-wide text-[var(--sage-800)]">
-            Optimal Transfer Corridor
+          <Truck className="w-4 h-4 text-[var(--ink-700)]" />
+          <span className="font-heading font-bold text-xs uppercase tracking-wide text-[var(--ink-900)]">
+            Transfer Corridor (Solver: Not yet run)
           </span>
         </div>
         <span
           className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${
             recommendation.solverStatus === 'OPTIMAL'
               ? 'bg-[var(--status-healthy)] text-white'
+              : recommendation.solverStatus === 'NOT_YET_RUN'
+              ? 'bg-[var(--paper-100)] text-[var(--ink-700)] border border-[var(--card-border)]'
               : 'bg-[var(--status-critical)] text-white'
           }`}
         >
-          {recommendation.solverStatus}
+          {recommendation.solverStatus === 'NOT_YET_RUN' ? 'Not yet run' : recommendation.solverStatus}
         </span>
       </div>
 

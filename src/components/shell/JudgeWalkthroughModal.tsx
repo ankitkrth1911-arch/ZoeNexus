@@ -59,8 +59,8 @@ const TOUR_STEPS: TourStepContent[] = [
     judgeKeyInsight:
       'Decision evidence in human context: Stock (420) sits directly next to 15-Day Demand (830) revealing a 410-unit deficit. Capacity data (18/24 beds) explains why: a 42% pediatric ARI surge caused the depletion.',
     technicalMechanism:
-      'Edge XGBoost model trained with Differential Privacy predicts 15-day forward demand curves with 95.7% accuracy and confidence bands.',
-    actionPrompt: 'Click "Open Resolve Shortage" to inspect the allocation plan.'
+      'Edge XGBoost model predicts 15-day forward demand curves with MAE 21.67 (validated against baselines on /metrics) and confidence bands.',
+    actionPrompt: 'Observe PHC_A at top of queue with coverage runway deficit.'
   },
   {
     stepNumber: 4,
@@ -68,7 +68,7 @@ const TOUR_STEPS: TourStepContent[] = [
     questionAnswered: 'Where can we safely source the required medicine?',
     badge: 'ACTION LAYER',
     judgeKeyInsight:
-      'Evaluates nearby facilities within a 50km radius. Critically, PHC 115 is rejected because donating would deplete its own reserve below statutory safety standards. PHC 072 is safe because it maintains 14.8 days coverage post-transfer.',
+      'Evaluates nearby facilities within a 50km radius. Critically, donor facilities are screened so donating never depletes their own reserve below statutory safety standards.',
     technicalMechanism:
       'Multi-commodity constraint evaluation guarantees no donor is pushed into secondary risk.',
     actionPrompt: 'Review the SAFE: YES vs SAFE: NO comparison table.'
@@ -77,22 +77,22 @@ const TOUR_STEPS: TourStepContent[] = [
     stepNumber: 5,
     screenTitle: '04 Resolve: Mathematical Optimization',
     questionAnswered: 'Can I verify all constraints before approving?',
-    badge: 'DETERMINISTIC SOLVER',
+    badge: 'SOLVER PREPARATION',
     judgeKeyInsight:
-      'The OR-Tools solver recommends: Transfer exactly 420 units from PHC 072 → PHC 184. Residual shortage is reduced to 0 units. Transit is 42 min via NH-48.',
+      'Mathematical optimization engine: Not yet run. Candidate corridors and statutory constraints are prepared for execution once triggered.',
     technicalMechanism:
-      '4 verifiable constraint checks (Donor Safety, Receiver Need, Route Feasibility, and Active Cold Chain) must ALL pass.',
-    actionPrompt: 'Inspect the 4/4 passed constraint badges.'
+      '4 verifiable constraint checks (Donor Safety, Receiver Need, Route Feasibility, and Active Cold Chain) must ALL pass before approval.',
+    actionPrompt: 'Inspect candidate constraint checks (Solver: Not yet run).'
   },
   {
     stepNumber: 6,
-    screenTitle: '04 Resolve: Grounded Gemini Explanation',
+    screenTitle: '04 Resolve: Grounded Decision Rationale',
     questionAnswered: 'Why this donor and not another?',
     badge: 'EXPLAINABLE AI',
     judgeKeyInsight:
-      'Google Gemini synthesizes a plain-language briefing grounded exclusively in structured solver outputs. It never invents medicine numbers or routes.',
+      'Decision rationale synthesizes a plain-language briefing grounded exclusively in structured clinical and logistics telemetry.',
     technicalMechanism:
-      'Few-shot prompt grounded in IPHS 2022 standards and WHO PQS cold-chain storage parameters.',
+      'Grounded in IPHS 2022 standards and WHO PQS cold-chain storage parameters.',
     actionPrompt: 'Click "Why not more?" to see capacity bounds explanation.'
   },
   {
@@ -112,10 +112,10 @@ const TOUR_STEPS: TourStepContent[] = [
     questionAnswered: 'Can we reconstruct and verify this decision later?',
     badge: 'IMMUTABLE PROOF',
     judgeKeyInsight:
-      'Every single step — input snapshot, risk trigger, solver run, explanation, and human sign-off — is permanently recorded with SHA-256 state hashes and model versions.',
+      'Every single step — input snapshot, risk trigger, model inference, explanation, and human sign-off — is recorded with genuine SHA-256 state hashes and model versions.',
     technicalMechanism:
       'Cryptographically linked audit bundle ready for statutory health ministry export.',
-    actionPrompt: 'Notice the SHA-256 state hash for the approval event.'
+    actionPrompt: 'Notice the genuine SHA-256 state hash for the recorded event.'
   },
   {
     stepNumber: 9,
@@ -123,9 +123,9 @@ const TOUR_STEPS: TourStepContent[] = [
     questionAnswered: 'How does the model learn without pooling patient data?',
     badge: 'FEDERATED INTELLIGENCE',
     judgeKeyInsight:
-      'Raw patient health records stay 100% on the local PHC clinic server. Only differential-private model gradients cross the perimeter to create Global Model v75.',
+      'Raw patient health records stay 100% on the local PHC clinic server. The federation perimeter architecture keeps patient data strictly within facility boundaries.',
     technicalMechanism:
-      'Differential Privacy budget (ε = 1.84) ensures zero sensitive patient telemetry leakage across borders.',
+      'Federated learning & Differential Privacy calibration: Not yet run on edge hardware (Architecture ready).',
     actionPrompt: 'Inspect the strict Federation Perimeter boundary diagram.'
   }
 ];

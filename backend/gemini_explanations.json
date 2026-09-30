@@ -1,0 +1,137 @@
+[
+  {
+    "phc_id": "PHC_C",
+    "medicine_id": "Diuretic",
+    "risk_level": "LOW",
+    "predicted_15_day_demand": 1129.28,
+    "current_stock": 1600.0,
+    "expected_shortage": 0.0,
+    "gemini_explanation": "Risk:\nLOW\n\nReason:\nThe stock status for Diuretic at PHC_C indicates a low risk level because the current stock of 1,600.0 units successfully covers both the predicted 15-day demand of 1,129.28 units and the safety stock requirement of 300.0 units, resulting in a healthy stock ratio of 1.4168. The machine learning model's forecast was primarily influenced by signals such as the 14-day rolling mean (`rolling_mean_14`), 14-day rolling sum (`rolling_sum_14`), and 7-day rolling mean (`rolling_mean_7`), all of which contributed to increasing the demand forecast.\n\nExpected shortage:\n0.0\n\nRecommended attention:\nThe PHC supervisor should continue to monitor inventory levels routinely, paying attention to how ongoing consumption trends—reflected by the 14-day and 7-day rolling averages—align with the predicted demand over the next 15 days, even though no shortage is currently expected."
+  },
+  {
+    "phc_id": "PHC_C",
+    "medicine_id": "Telmisartan",
+    "risk_level": "HIGH",
+    "predicted_15_day_demand": 891.17,
+    "current_stock": 750.0,
+    "expected_shortage": 341.17,
+    "gemini_explanation": "Risk:\nHIGH\n\nReason:\nAt PHC_C, the current stock of Telmisartan is 750.0 units, which is below the predicted 15-day demand of 891.17 units and does not cover the demand plus the required safety stock of 200.0 units. The stock coverage ratio is 0.8416 (below 1.0). Key signals used by the machine learning model include recent historical demand patterns such as the 14-day rolling mean and 14-day rolling sum, which decreased the forecast, as well as the 15-day lag, which increased the forecast.\n\nExpected shortage:\n341.17\n\nRecommended attention:\nThe PHC supervisor should pay attention to the impending stockout of Telmisartan over the next 15-day forecast horizon, noting the expected shortage of 341.17 units and ensuring that current stock levels (750.0 units) are insufficient to meet projected demand and safety stock requirements (200.0 units)."
+  },
+  {
+    "phc_id": "PHC_B",
+    "medicine_id": "Diuretic",
+    "risk_level": "HIGH",
+    "predicted_15_day_demand": 1380.61,
+    "current_stock": 1000.0,
+    "expected_shortage": 680.61,
+    "gemini_explanation": "Risk:\nHIGH\n\nReason:\nFor Diuretic at PHC_B, the current stock is 1,000.0 units, which is below the predicted 15-day demand of 1,380.61 units. The current stock does not cover the predicted demand plus the safety stock of 300.0 units, resulting in a stock coverage ratio of 0.7243 (which is below 1.0). The machine learning model's forecast was primarily influenced by signals such as the 14-day rolling mean and 14-day rolling sum, which increased the forecast.\n\nExpected shortage:\n680.61 units\n\nRecommended attention:\nThe PHC supervisor should pay attention to the incoming stock deficit, as the expected shortage is approximately 680.61 units over the next 15 days, and current inventory fails to meet the safety stock requirements."
+  },
+  {
+    "phc_id": "PHC_B",
+    "medicine_id": "Telmisartan",
+    "risk_level": "MEDIUM",
+    "predicted_15_day_demand": 1078.72,
+    "current_stock": 1200.0,
+    "expected_shortage": 128.72,
+    "gemini_explanation": "Risk:\nMEDIUM\n\nReason:\nThe risk engine has determined a MEDIUM risk level for Telmisartan at PHC_B over the 15-day forecast horizon because the current stock of 1,200.0 units does not cover the predicted 15-day demand of 1,078.72 units plus the required safety stock of 250.0 units. The machine learning model's forecast is primarily influenced by signals such as the 14-day rolling mean, 14-day rolling sum, 7-day rolling mean, 15-day lag, and the day of the month, all of which act as upward signals increasing the demand forecast.\n\nExpected shortage:\n128.72 units\n\nRecommended attention:\nThe PHC supervisor should pay attention to the upcoming inventory deficit, as an expected shortage of approximately 128.72 units is projected over the next 15 days, leaving the facility below its safety stock threshold."
+  },
+  {
+    "phc_id": "PHC_E",
+    "medicine_id": "Diuretic",
+    "risk_level": "MEDIUM",
+    "predicted_15_day_demand": 1241.95,
+    "current_stock": 1500.0,
+    "expected_shortage": 41.95,
+    "gemini_explanation": "Risk:\nMEDIUM\n\nReason:\nFor Diuretic at PHC_E over the 15-day forecast horizon, the current stock of 1,500.0 units is not enough to fully cover the predicted demand of 1,241.95 units plus the required safety stock of 300.0 units. Signals used by the machine learning model include the 14-day rolling mean and rolling sum, which increased the forecast, alongside recent demand patterns.\n\nExpected shortage:\n41.95\n\nRecommended attention:\nThe PHC supervisor should pay attention to the current stock level of 1,500.0 units and the expected shortage of 41.95 units, ensuring that inventory monitoring accounts for the upcoming demand and the required safety stock of 300.0 units."
+  },
+  {
+    "phc_id": "PHC_B",
+    "medicine_id": "Amlodipine",
+    "risk_level": "HIGH",
+    "predicted_15_day_demand": 980.53,
+    "current_stock": 700.0,
+    "expected_shortage": 480.53,
+    "gemini_explanation": "Risk:\nHIGH\n\nReason:\nThe risk engine has determined that the current stock of 700.0 units for Amlodipine at PHC_B is below the predicted 15-day demand of 980.53 units. The current stock also does not cover the predicted demand plus the safety stock of 200.0 units, resulting in a stock coverage ratio of 0.7139, which is below 1.0. Important signals used by the machine learning model include the 14-day rolling standard deviation (which increases the forecast), the 14-day rolling mean (which decreases the forecast), the 15-day lag, the day of the month, and the 14-day rolling sum.\n\nExpected shortage:\n480.53 units\n\nRecommended attention:\nThe PHC supervisor should pay attention to the impending inventory deficit for Amlodipine, specifically noting that current stock levels are insufficient to cover the expected 15-day demand and safety stock requirements, leading to an expected shortage of 480.53 units."
+  },
+  {
+    "phc_id": "PHC_D",
+    "medicine_id": "Diuretic",
+    "risk_level": "LOW",
+    "predicted_15_day_demand": 1404.19,
+    "current_stock": 1800.0,
+    "expected_shortage": 0.0,
+    "gemini_explanation": "Risk:\nLOW\n\nReason:\nFor PHC_D regarding the medicine Diuretic, the current stock is 1800.0 units, which successfully covers the predicted 15-day demand of 1404.19 units and the required safety stock of 300.0 units. Key signals used by the machine learning model include the 14-day rolling mean and 14-day rolling sum, which increased the demand forecast. \n\nExpected shortage:\n0.0\n\nRecommended attention:\nThe PHC supervisor should note that current stock levels are adequate to cover demand and safety stock for the next 15 days, with no immediate shortage expected."
+  },
+  {
+    "phc_id": "PHC_C",
+    "medicine_id": "Amlodipine",
+    "risk_level": "LOW",
+    "predicted_15_day_demand": 777.34,
+    "current_stock": 1000.0,
+    "expected_shortage": 0.0,
+    "gemini_explanation": "Risk:\nLOW\n\nReason:\nAt PHC_C, the current stock of Amlodipine is 1000.0 units, which is above the safety stock requirement of 200.0 units and sufficient to cover the predicted 15-day demand of 777.34 units. The stock ratio is 1.2864, meaning current inventory adequately covers expected needs. Important signals used by the machine learning model include the 14-day rolling mean and 14-day rolling sum, which served as downward drivers for the demand forecast.\n\nExpected shortage:\n0.0\n\nRecommended attention:\nThe PHC supervisor should note that current stock covers predicted demand and safety stock, indicating a stable inventory status for Amlodipine over the next 15 days. Regular inventory tracking should be maintained to monitor future consumption trends."
+  },
+  {
+    "phc_id": "PHC_A",
+    "medicine_id": "Telmisartan",
+    "risk_level": "HIGH",
+    "predicted_15_day_demand": 962.66,
+    "current_stock": 900.0,
+    "expected_shortage": 312.66,
+    "gemini_explanation": "Risk:\nHIGH\n\nReason:\nThe stock status for Telmisartan at PHC_A is currently classified as HIGH risk because the current stock of 900.0 units is below the predicted 15-day demand of 962.66 units, meaning the current stock does not cover the predicted demand plus the required safety stock of 250.0 units. The stock coverage ratio is 0.9349, which is below 1.0. Signals used by the machine learning model in forming this outlook include the 14-day rolling mean and 15-day lag features.\n\nExpected shortage:\n312.66 units\n\nRecommended attention:\nThe PHC supervisor should pay attention to the upcoming inventory deficit for Telmisartan, specifically monitoring the expected shortage of 312.66 units over the 15-day forecast horizon and ensuring stock levels are managed to account for both the predicted demand and the safety stock threshold of 250.0 units."
+  },
+  {
+    "phc_id": "PHC_D",
+    "medicine_id": "Telmisartan",
+    "risk_level": "HIGH",
+    "predicted_15_day_demand": 1172.88,
+    "current_stock": 1000.0,
+    "expected_shortage": 422.88,
+    "gemini_explanation": "Risk:\nHIGH\n\nReason:\nAt PHC_D for Telmisartan, the current stock of 1,000.0 units is below the predicted 15-day demand of 1,172.88 units and does not cover the required demand plus safety stock (250.0 units). The stock coverage ratio is 0.8526, which is below 1.0. The machine learning model's forecast is primarily influenced by signals such as the 14-day rolling mean and 14-day rolling sum, which increase the demand forecast.\n\nExpected shortage:\n422.88 units\n\nRecommended attention:\nThe PHC supervisor should pay attention to the current stock level of 1,000.0 units, the safety stock requirement of 250.0 units, and the expected shortage of 422.88 units over the next 15-day forecast horizon."
+  },
+  {
+    "phc_id": "PHC_A",
+    "medicine_id": "Diuretic",
+    "risk_level": "MEDIUM",
+    "predicted_15_day_demand": 1214.97,
+    "current_stock": 1500.0,
+    "expected_shortage": 14.97,
+    "gemini_explanation": "Risk:\nMEDIUM\n\nReason:\nThe risk level is classified as MEDIUM for PHC_A regarding the Diuretic medicine because the current stock of 1,500.0 units does not fully cover the predicted 15-day demand of 1,214.97 units plus the required safety stock of 300.0 units. Signals used by the machine learning model include recent consumption patterns, with the 14-day rolling mean and 14-day rolling sum acting as primary upward drivers on the forecast.\n\nExpected shortage:\n14.97\n\nRecommended attention:\nThe PHC supervisor should pay attention to the upcoming inventory levels for Diuretic at PHC_A, as current stock is projected to fall short by 14.97 units when accounting for the safety stock buffer over the 15-day forecast horizon."
+  },
+  {
+    "phc_id": "PHC_E",
+    "medicine_id": "Amlodipine",
+    "risk_level": "MEDIUM",
+    "predicted_15_day_demand": 845.02,
+    "current_stock": 900.0,
+    "expected_shortage": 145.02,
+    "gemini_explanation": "Risk:\nMEDIUM\n\nReason:\nThe monitoring system indicates that the current stock of 900.0 units is insufficient to cover the predicted 15-day demand of 845.02 units while maintaining the required safety stock of 200.0 units. Signals used by the machine learning model, such as recent rolling averages and consumption lags (including rolling_mean_14 and rolling_mean_7), contributed to the overall demand forecast.\n\nExpected shortage:\n145.02 units\n\nRecommended attention:\nThe PHC supervisor should pay attention to the upcoming inventory deficit for Amlodipine at PHC_E, specifically monitoring the expected shortage of 145.02 units over the 15-day forecast horizon to ensure stock levels remain adequate relative to the safety stock requirement."
+  },
+  {
+    "phc_id": "PHC_A",
+    "medicine_id": "Amlodipine",
+    "risk_level": "LOW",
+    "predicted_15_day_demand": 776.18,
+    "current_stock": 1200.0,
+    "expected_shortage": 0.0,
+    "gemini_explanation": "Risk:\nLOW\n\nReason:\nThe stock status for Amlodipine at PHC_A is currently classified as LOW risk because the current stock of 1,200.0 units is sufficient to cover the predicted 15-day demand of 776.18 units as well as the safety stock requirement of 250.0 units. Signals used by the machine learning model, such as the 14-day rolling mean and 14-day rolling sum, contributed to decreasing the demand forecast, supporting the stable stock outlook.\n\nExpected shortage:\n0.0\n\nRecommended attention:\nThe PHC supervisor should continue to monitor stock levels routinely and keep track of recent consumption trends, such as the 14-day rolling mean and 7-day rolling average signals utilized by the model, to ensure stock remains adequate over time."
+  },
+  {
+    "phc_id": "PHC_D",
+    "medicine_id": "Amlodipine",
+    "risk_level": "LOW",
+    "predicted_15_day_demand": 982.99,
+    "current_stock": 1400.0,
+    "expected_shortage": 0.0,
+    "gemini_explanation": "Risk:\nLOW\n\nReason:\nFor Amlodipine at PHC_D, the current stock of 1,400 units is higher than the predicted 15-day demand of 982.99 units plus the safety stock requirement of 250 units. The current stock covers both the predicted demand and safety stock (stock ratio of 1.4242). Signals used by the machine learning model that influenced the forecast include the 14-day rolling mean and 14-day rolling sum, which increased the forecast, alongside the 3-day rolling mean, day of the month, and day of the week.\n\nExpected shortage:\n0.0\n\nRecommended attention:\nThe PHC supervisor should note that stock levels are currently sufficient to cover the upcoming 15-day demand and safety stock. Continued monitoring of future consumption patterns—such as the 14-day and 3-day rolling trends—is recommended to maintain adequate inventory levels."
+  },
+  {
+    "phc_id": "PHC_E",
+    "medicine_id": "Telmisartan",
+    "risk_level": "HIGH",
+    "predicted_15_day_demand": 1020.44,
+    "current_stock": 800.0,
+    "expected_shortage": 470.44,
+    "gemini_explanation": "Risk:\nHIGH\n\nReason:\nAt PHC_E, the current stock of Telmisartan is 800.0 units, which is below the predicted 15-day demand of 1,020.44 units. The current stock also does not cover the predicted demand plus the required safety stock of 250.0 units, resulting in a stock coverage ratio of 0.784 (which is below 1.0). Key signals evaluated by the machine learning model include recent consumption patterns such as the 14-day rolling mean and 14-day rolling sum, which increased the forecast, alongside shorter-term trends like the 3-day rolling mean and day of the week, which slightly decreased the forecast.\n\nExpected shortage:\n470.44\n\nRecommended attention:\nThe PHC supervisor should pay attention to the projected stock depletion for Telmisartan over the next 15 days, as the current inventory of 800.0 units is insufficient to meet the predicted demand of 1,020.44 units and maintain the safety stock level of 250.0 units, leading to an expected shortage of 470.44 units."
+  }
+]

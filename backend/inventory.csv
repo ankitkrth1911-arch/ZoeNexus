@@ -1,0 +1,16 @@
+phc_id,medicine_id,current_stock,safety_stock
+PHC_A,Amlodipine,1200,250
+PHC_A,Telmisartan,900,250
+PHC_A,Diuretic,1500,300
+PHC_B,Amlodipine,700,200
+PHC_B,Telmisartan,1200,250
+PHC_B,Diuretic,1000,300
+PHC_C,Amlodipine,1000,200
+PHC_C,Telmisartan,750,200
+PHC_C,Diuretic,1600,300
+PHC_D,Amlodipine,1400,250
+PHC_D,Telmisartan,1000,250
+PHC_D,Diuretic,1800,300
+PHC_E,Amlodipine,900,200
+PHC_E,Telmisartan,800,250
+PHC_E,Diuretic,1500,300

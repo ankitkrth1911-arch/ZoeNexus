@@ -152,7 +152,7 @@ export interface SolverRecommendation {
   constraints: ConstraintCheckItem[];
   generatedTimestamp: string;
   solverType: string;
-  solverStatus: 'OPTIMAL' | 'INFEASIBLE' | 'DEGRADED';
+  solverStatus: 'OPTIMAL' | 'INFEASIBLE' | 'DEGRADED' | 'NOT_YET_RUN';
 }
 
 export interface GeminiExplanation {
@@ -169,6 +169,9 @@ export interface GeminiExplanation {
   }[];
   regulatoryCompliance: string; // e.g. "IPHS 2022 §4.2 & WHO PQS E003/01"
   confidenceScore: number;      // e.g. 96.4%
+  source?: 'gemini' | 'cached';
+  rawExplanation?: string;
+  modelUsed?: string;
 }
 
 export interface AuditEvent {
@@ -190,11 +193,11 @@ export interface FederationNodeClient {
   location: string;
   status: 'Training' | 'Complete' | 'Offline';
   samplesCount: number;
-  localAccuracy: number;
+  localAccuracy: number | null;
   weightGradientsKB: number;
   latencyMs: number;
   lastRoundLoss: number;
-  differentialPrivacyEpsilon: number;
+  differentialPrivacyEpsilon: number | null;
 }
 
 export interface FederationRoundState {
@@ -203,10 +206,10 @@ export interface FederationRoundState {
   globalModelVersion: string;
   participatingClients: number;
   totalClients: number;
-  globalAccuracyPct: number;
+  globalAccuracyPct: number | null;
   convergenceDelta: number;
   epsilonBudgetTotal: number;
-  epsilonBudgetConsumed: number;
+  epsilonBudgetConsumed: number | null;
   lastAggregatedAt: string;
   clients: FederationNodeClient[];
 }

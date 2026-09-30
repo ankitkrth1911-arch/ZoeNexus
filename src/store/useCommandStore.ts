@@ -309,7 +309,7 @@ export const useCommandStore = create<CommandState>((set, get) => ({
 
     get().addToast({
       title: 'Federated Round #6 Initiated',
-      description: 'Broadcasting model weights to 5 district edge nodes with DP (ε=1.84).',
+      description: 'Broadcasting model weights to 5 district edge nodes with DP (Not yet run).',
       type: 'info',
     });
 

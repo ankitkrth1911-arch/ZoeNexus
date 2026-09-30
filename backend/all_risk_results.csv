@@ -1,0 +1,16 @@
+phc_id,medicine_id,forecast_horizon,predicted_15_day_demand,current_stock,safety_stock,expected_shortage,stock_ratio,risk_level,model_version,generated_at
+PHC_A,Amlodipine,15_days,776.18,1200,250,0.0,1.546,LOW,xgb-demand-v2,2026-09-29T01:41:38.044041
+PHC_A,Diuretic,15_days,1214.97,1500,300,14.97,1.235,MEDIUM,xgb-demand-v2,2026-09-29T01:41:38.044041
+PHC_A,Telmisartan,15_days,962.66,900,250,312.66,0.935,HIGH,xgb-demand-v2,2026-09-29T01:41:38.044041
+PHC_B,Amlodipine,15_days,980.53,700,200,480.53,0.714,HIGH,xgb-demand-v2,2026-09-29T01:41:38.044041
+PHC_B,Diuretic,15_days,1380.61,1000,300,680.61,0.724,HIGH,xgb-demand-v2,2026-09-29T01:41:38.044041
+PHC_B,Telmisartan,15_days,1078.72,1200,250,128.72,1.112,MEDIUM,xgb-demand-v2,2026-09-29T01:41:38.044041
+PHC_C,Amlodipine,15_days,777.34,1000,200,0.0,1.286,LOW,xgb-demand-v2,2026-09-29T01:41:38.044041
+PHC_C,Diuretic,15_days,1129.28,1600,300,0.0,1.417,LOW,xgb-demand-v2,2026-09-29T01:41:38.044041
+PHC_C,Telmisartan,15_days,891.17,750,200,341.17,0.842,HIGH,xgb-demand-v2,2026-09-29T01:41:38.044041
+PHC_D,Amlodipine,15_days,982.99,1400,250,0.0,1.424,LOW,xgb-demand-v2,2026-09-29T01:41:38.044041
+PHC_D,Diuretic,15_days,1404.19,1800,300,0.0,1.282,LOW,xgb-demand-v2,2026-09-29T01:41:38.044041
+PHC_D,Telmisartan,15_days,1172.88,1000,250,422.88,0.853,HIGH,xgb-demand-v2,2026-09-29T01:41:38.044041
+PHC_E,Amlodipine,15_days,845.02,900,200,145.02,1.065,MEDIUM,xgb-demand-v2,2026-09-29T01:41:38.044041
+PHC_E,Diuretic,15_days,1241.95,1500,300,41.95,1.208,MEDIUM,xgb-demand-v2,2026-09-29T01:41:38.044041
+PHC_E,Telmisartan,15_days,1020.44,800,250,470.44,0.784,HIGH,xgb-demand-v2,2026-09-29T01:41:38.044041

@@ -22,7 +22,7 @@ interface ForecastPanelProps {
 
 export const ForecastPanel: React.FC<ForecastPanelProps> = ({
   data,
-  medicineName = 'Amoxicillin 500mg',
+  medicineName = 'Amlodipine',
   className = '',
 }) => {
   return (

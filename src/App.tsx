@@ -25,7 +25,7 @@ import { JudgeWalkthroughModal } from './components/shell/JudgeWalkthroughModal'
 import { ToastContainer } from './components/shell/ToastContainer';
 
 export const App: React.FC = () => {
-  const { screen, theme, setScreen } = useResilienceStore();
+  const { screen, theme, setScreen, initBackendData, dataLabel, isLiveData, isLoadingBackend } = useResilienceStore();
 
   useEffect(() => {
     // Synchronize daylight medical and night ops themes
@@ -35,6 +35,12 @@ export const App: React.FC = () => {
       document.documentElement.classList.remove('dark');
     }
   }, [theme]);
+
+  // Hydrate store from real backend on first mount
+  useEffect(() => {
+    initBackendData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Global keyboard shortcuts for rapid judge navigation
   useEffect(() => {
@@ -86,6 +92,32 @@ export const App: React.FC = () => {
       <CommandPalette />
       <JudgeWalkthroughModal />
       <ToastContainer />
+
+      {/* DATA PROVENANCE BADGE — always visible bottom-left, critical for demo honesty */}
+      <div
+        id="data-provenance-badge"
+        className="fixed bottom-4 left-4 z-50 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm border shadow-md select-none pointer-events-none"
+        style={{
+          background: isLiveData ? 'rgba(22,163,74,0.15)' : 'rgba(180,83,9,0.12)',
+          borderColor: isLiveData ? 'rgba(22,163,74,0.4)' : 'rgba(180,83,9,0.35)',
+          color: isLiveData ? '#15803d' : '#92400e',
+        }}
+      >
+        {isLoadingBackend ? (
+          <>
+            <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#6b7280', display: 'inline-block', animation: 'pulse 1.2s ease-in-out infinite' }} />
+            Connecting to backend…
+          </>
+        ) : (
+          <>
+            <span style={{
+              width: 7, height: 7, borderRadius: '50%', display: 'inline-block',
+              background: isLiveData ? '#16a34a' : '#d97706',
+            }} />
+            <span>{isLiveData ? 'Simulated data' : 'Offline demo data'}</span>
+          </>
+        )}
+      </div>
     </div>
   );
 };

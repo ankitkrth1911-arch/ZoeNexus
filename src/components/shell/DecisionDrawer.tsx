@@ -1,5 +1,5 @@
 // Decision Drawer — The Signature Decision Surface
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   X,
   ShieldCheck,
@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { useResilienceStore } from '../../store/useResilienceStore';
 import { DecisionStep } from '../../types/decision';
+import { fetchExplanation, type BackendExplanation } from '../../services/apiService';
 
 export const DecisionDrawer: React.FC = () => {
   const {
@@ -38,18 +39,42 @@ export const DecisionDrawer: React.FC = () => {
     setScreen,
   } = useResilienceStore();
 
-  const [activeQuestion, setActiveQuestion] = useState<'why_donor' | 'why_not_more' | 'what_caused' | null>('why_donor');
+  const [activeQuestion, setActiveQuestion] = useState<'why_donor' | 'why_not_more' | 'what_caused' | null>('what_caused');
   const [rejectReason, setRejectReason] = useState('');
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [officerNote, setOfficerNote] = useState('');
   const [expandedSection, setExpandedSection] = useState<'donors' | 'constraints' | 'gemini' | 'all'>('all');
-
-  if (!isDrawerOpen) return null;
+  const [backendExplanation, setBackendExplanation] = useState<BackendExplanation | null>(null);
+  const [isLoadingExplanation, setIsLoadingExplanation] = useState(false);
+  const [showFullExplanation, setShowFullExplanation] = useState(false);
 
   const phc = getCurrentPHC();
   const donors = getDonorsList();
   const recommendation = getRecommendation();
   const gemini = getGeminiExplanation();
+
+  useEffect(() => {
+    if (!isDrawerOpen || !phc) return;
+    let cancelled = false;
+    setIsLoadingExplanation(true);
+    fetchExplanation(phc.id, phc.primaryMedicine)
+      .then((res) => {
+        if (!cancelled && res.data) {
+          setBackendExplanation(res.data);
+        }
+      })
+      .catch((err) => {
+        console.warn('Failed to load explanation:', err);
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoadingExplanation(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isDrawerOpen, phc?.id, phc?.primaryMedicine]);
+
+  if (!isDrawerOpen) return null;
 
   const STEPS: { id: DecisionStep; label: string }[] = [
     { id: 'OBSERVED', label: 'Observed' },
@@ -109,8 +134,8 @@ export const DecisionDrawer: React.FC = () => {
             <span className="font-heading font-bold text-xs uppercase tracking-wider text-[var(--sage-700)]">
               Resolve Shortage
             </span>
-            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[var(--sage-100)] text-[var(--ink-700)] font-medium">
-              OR-Tools LP v9.8
+            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[var(--paper-100)] text-[var(--ink-700)] font-medium border border-[var(--card-border)]">
+              OR-Tools Solver: Not yet run
             </span>
           </div>
           <h2 className="font-heading font-semibold text-sm text-[var(--ink-900)] mt-0.5 truncate max-w-[360px]">
@@ -328,19 +353,21 @@ export const DecisionDrawer: React.FC = () => {
         <div className="p-3.5 rounded-lg border border-[var(--sage-600)]/40 bg-[var(--sage-50)] shadow-xs space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
-              <Truck className="w-4 h-4 text-[var(--sage-700)]" />
-              <span className="text-xs font-heading font-bold text-[var(--sage-800)] uppercase tracking-wide">
-                Optimal Transfer Recommendation
+              <Truck className="w-4 h-4 text-[var(--ink-700)]" />
+              <span className="text-xs font-heading font-bold text-[var(--ink-900)] uppercase tracking-wide">
+                Transfer Recommendation (Solver: Not yet run)
               </span>
             </div>
             <span
               className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${
                 recommendation.solverStatus === 'OPTIMAL'
                   ? 'bg-[var(--status-healthy)] text-white'
+                  : recommendation.solverStatus === 'NOT_YET_RUN'
+                  ? 'bg-[var(--paper-100)] text-[var(--ink-700)] border border-[var(--card-border)]'
                   : 'bg-[var(--status-critical)] text-white'
               }`}
             >
-              {recommendation.solverStatus}
+              {recommendation.solverStatus === 'NOT_YET_RUN' ? 'Not yet run' : recommendation.solverStatus}
             </span>
           </div>
 
@@ -348,26 +375,25 @@ export const DecisionDrawer: React.FC = () => {
           <div className="p-2.5 rounded-md bg-[var(--card-bg)] border border-[var(--card-border)] text-xs space-y-1.5">
             <div className="flex items-center justify-between font-mono">
               <span className="text-[var(--ink-700)]">{recommendation.donorName.split('—')[0]}</span>
-              <div className="flex items-center gap-1 text-[var(--sage-700)] font-bold">
+              <div className="flex items-center gap-1 text-[var(--ink-500)] font-semibold text-[11px]">
                 <ArrowRight className="w-3.5 h-3.5" />
-                <span>{recommendation.transferQuantity} units</span>
+                <span>Solver: Not yet run</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>
               <span className="text-[var(--ink-900)] font-semibold">{recommendation.receiverName.split('—')[0]}</span>
             </div>
 
             <div className="pt-1.5 border-t border-[var(--card-border)]/60 flex items-center justify-between text-[11px] text-[var(--ink-500)] font-mono">
-              <span>Residual Shortage: <strong className="text-[var(--status-healthy)]">{recommendation.residualShortage} units</strong></span>
-              <span>ETA: {recommendation.transitMinutes} min ({recommendation.distanceKm} km)</span>
-              <span>Cost: ₹{recommendation.estLogisticsCostINR}</span>
+              <span>Status: <strong className="text-[var(--ink-700)]">Not yet run</strong></span>
+              <span>Candidate Corridor: {recommendation.corridor}</span>
             </div>
           </div>
 
-          {/* Constraint Verifications (4 Mandatory checks with pass/fail) */}
+          {/* Constraint Verifications (Candidate checks) */}
           <div className="space-y-1.5">
             <div className="text-[10px] uppercase font-mono tracking-wider text-[var(--ink-700)] font-semibold flex items-center justify-between">
               <span>Operational Constraints Verification</span>
-              <span className="text-[var(--sage-700)]">4/4 Validated</span>
+              <span className="text-[var(--ink-500)]">Pending Solver (Not yet run)</span>
             </div>
 
             <div className="space-y-1">
@@ -411,90 +437,163 @@ export const DecisionDrawer: React.FC = () => {
         </div>
 
         {/* SECTION D: EXPLAINABLE AI (Google Gemini Card) */}
-        {gemini ? (
-          <div className="p-3.5 rounded-lg border border-[var(--cream-100)] bg-[var(--cream-50)] text-xs space-y-2.5">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-[var(--status-warning)]" />
-                <span className="font-heading font-bold text-xs uppercase tracking-wide text-[var(--ink-900)]">
-                  Explainable AI Rationale
-                </span>
+        {(() => {
+          const parseExplanationSections = (text?: string) => {
+            if (!text) return { risk: '', reason: '', shortage: '', attention: '' };
+            const reasonMatch = text.match(/Reason:\s*([\s\S]*?)(?=\n\s*(?:Expected shortage|Recommended attention):|$)/i);
+            const shortageMatch = text.match(/Expected shortage:\s*([\s\S]*?)(?=\n\s*Recommended attention:|$)/i);
+            const attentionMatch = text.match(/Recommended attention:\s*([\s\S]*?)$/i);
+            const riskMatch = text.match(/Risk:\s*([\s\S]*?)(?=\n\s*Reason:|$)/i);
+            return {
+              risk: riskMatch ? riskMatch[1].trim() : '',
+              reason: reasonMatch ? reasonMatch[1].trim() : '',
+              shortage: shortageMatch ? shortageMatch[1].trim() : '',
+              attention: attentionMatch ? attentionMatch[1].trim() : '',
+            };
+          };
+
+          const rawText = backendExplanation?.explanation;
+          const parsed = parseExplanationSections(rawText);
+          const activeSource = backendExplanation?.source || gemini?.source || 'cached';
+
+          return (
+            <div className="p-3.5 rounded-lg border border-[var(--cream-100)] bg-[var(--cream-50)] text-xs space-y-2.5">
+              <div className="flex items-center justify-between gap-2 flex-wrap">
+                <div className="flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-[var(--status-warning)]" />
+                  <span className="font-heading font-bold text-xs uppercase tracking-wide text-[var(--ink-900)]">
+                    Explainable AI Rationale
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  {isLoadingExplanation ? (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono text-[var(--ink-500)] bg-[var(--paper-100)] border border-[var(--card-border)] animate-pulse">
+                      Fetching…
+                    </span>
+                  ) : activeSource === 'gemini' ? (
+                    <span
+                      id="explanation-source-badge"
+                      className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1 shadow-xs"
+                      title={`Model: ${backendExplanation?.model_used || 'gemini-2.5-flash'}`}
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      Source: Gemini Live ({backendExplanation?.model_used || 'gemini-2.5-flash'})
+                    </span>
+                  ) : (
+                    <span
+                      id="explanation-source-badge"
+                      className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-amber-50 text-amber-800 border border-amber-300 flex items-center gap-1"
+                      title="Pre-computed from gemini_explanations.json"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                      Source: Cached Explanation
+                    </span>
+                  )}
+                </div>
               </div>
-              <span className="text-[10px] font-mono text-[var(--ink-700)]">
-                Confidence {gemini.confidenceScore}%
-              </span>
-            </div>
 
-            {/* Quick Question Pills */}
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <button
-                onClick={() => setActiveQuestion('why_donor')}
-                className={`px-2 py-1 rounded text-[11px] font-medium border transition-colors ${
-                  activeQuestion === 'why_donor'
-                    ? 'bg-[var(--card-bg)] text-[var(--ink-900)] border-[var(--sage-600)] shadow-xs'
-                    : 'bg-[var(--cream-100)]/60 text-[var(--ink-700)] border-transparent hover:bg-[var(--card-bg)]'
-                }`}
-              >
-                Why this donor?
-              </button>
-              <button
-                onClick={() => setActiveQuestion('why_not_more')}
-                className={`px-2 py-1 rounded text-[11px] font-medium border transition-colors ${
-                  activeQuestion === 'why_not_more'
-                    ? 'bg-[var(--card-bg)] text-[var(--ink-900)] border-[var(--sage-600)] shadow-xs'
-                    : 'bg-[var(--cream-100)]/60 text-[var(--ink-700)] border-transparent hover:bg-[var(--card-bg)]'
-                }`}
-              >
-                Why not more?
-              </button>
-              <button
-                onClick={() => setActiveQuestion('what_caused')}
-                className={`px-2 py-1 rounded text-[11px] font-medium border transition-colors ${
-                  activeQuestion === 'what_caused'
-                    ? 'bg-[var(--card-bg)] text-[var(--ink-900)] border-[var(--sage-600)] shadow-xs'
-                    : 'bg-[var(--cream-100)]/60 text-[var(--ink-700)] border-transparent hover:bg-[var(--card-bg)]'
-                }`}
-              >
-                What caused this risk?
-              </button>
-            </div>
+              {/* Quick Question Pills */}
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <button
+                  onClick={() => setActiveQuestion('what_caused')}
+                  className={`px-2 py-1 rounded text-[11px] font-medium border transition-colors cursor-pointer ${
+                    activeQuestion === 'what_caused'
+                      ? 'bg-[var(--card-bg)] text-[var(--ink-900)] border-[var(--sage-600)] shadow-xs font-semibold'
+                      : 'bg-[var(--cream-100)]/60 text-[var(--ink-700)] border-transparent hover:bg-[var(--card-bg)]'
+                  }`}
+                >
+                  What caused this risk?
+                </button>
+                <button
+                  onClick={() => setActiveQuestion('why_not_more')}
+                  className={`px-2 py-1 rounded text-[11px] font-medium border transition-colors cursor-pointer ${
+                    activeQuestion === 'why_not_more'
+                      ? 'bg-[var(--card-bg)] text-[var(--ink-900)] border-[var(--sage-600)] shadow-xs font-semibold'
+                      : 'bg-[var(--cream-100)]/60 text-[var(--ink-700)] border-transparent hover:bg-[var(--card-bg)]'
+                  }`}
+                >
+                  Why this shortage?
+                </button>
+                <button
+                  onClick={() => setActiveQuestion('why_donor')}
+                  className={`px-2 py-1 rounded text-[11px] font-medium border transition-colors cursor-pointer ${
+                    activeQuestion === 'why_donor'
+                      ? 'bg-[var(--card-bg)] text-[var(--ink-900)] border-[var(--sage-600)] shadow-xs font-semibold'
+                      : 'bg-[var(--cream-100)]/60 text-[var(--ink-700)] border-transparent hover:bg-[var(--card-bg)]'
+                  }`}
+                >
+                  Supervisor Action
+                </button>
+              </div>
 
-            {/* Answer Display */}
-            <div className="p-2.5 rounded-md bg-[var(--card-bg)] border border-[var(--card-border)]/60 text-[11px] text-[var(--ink-700)] leading-relaxed">
-              {activeQuestion === 'why_donor' && (
-                <p>
-                  <strong>Why PHC 072: </strong>
-                  {gemini.whyThisDonor}
-                </p>
-              )}
-              {activeQuestion === 'why_not_more' && (
-                <p>
-                  <strong>Quantity Bound: </strong>
-                  {gemini.whyNotMore}
-                </p>
-              )}
-              {activeQuestion === 'what_caused' && (
-                <p>
-                  <strong>Epidemiological Root Cause: </strong>
-                  {gemini.whatCausedRisk}
-                </p>
-              )}
-            </div>
+              {/* Answer Display */}
+              <div className="p-2.5 rounded-md bg-[var(--card-bg)] border border-[var(--card-border)]/60 text-[11px] text-[var(--ink-700)] leading-relaxed space-y-1">
+                {activeQuestion === 'what_caused' && (
+                  <div>
+                    <strong className="text-[var(--ink-900)] block mb-0.5">
+                      Forecast &amp; Model Signals ({phc.id} — {phc.primaryMedicine}):
+                    </strong>
+                    <p>{parsed.reason || rawText || gemini?.whatCausedRisk || 'Demand signals processed by XGBoost forecaster.'}</p>
+                  </div>
+                )}
+                {activeQuestion === 'why_not_more' && (
+                  <div>
+                    <strong className="text-[var(--ink-900)] block mb-0.5">
+                      Expected Shortage &amp; Stock Buffer:
+                    </strong>
+                    <p>
+                      {phc.id} has an expected 15-day shortage of{' '}
+                      <span className="font-mono font-bold text-[var(--status-critical)]">
+                        {parsed.shortage || backendExplanation?.expected_shortage || phc.shortageUnits || '0'} units
+                      </span>{' '}
+                      for {phc.primaryMedicine}. Current stock:{' '}
+                      <span className="font-mono font-semibold">
+                        {backendExplanation?.current_stock ?? phc.currentStock} units
+                      </span>
+                      ; predicted demand:{' '}
+                      <span className="font-mono font-semibold">
+                        {backendExplanation?.predicted_15_day_demand ?? phc.forecastDemand15d} units
+                      </span>
+                      . Transfer bounds protect donor safety reserves.
+                    </p>
+                  </div>
+                )}
+                {activeQuestion === 'why_donor' && (
+                  <div>
+                    <strong className="text-[var(--ink-900)] block mb-0.5">
+                      Recommended Attention:
+                    </strong>
+                    <p>{parsed.attention || gemini?.whyThisDonor || 'Monitor upcoming stock levels and safe replenishment windows.'}</p>
+                  </div>
+                )}
+              </div>
 
-            {/* Regulatory Citation */}
-            <div className="text-[10px] text-[var(--ink-500)] font-mono flex items-center justify-between border-t border-[var(--card-border)]/40 pt-1.5">
-              <span>{gemini.regulatoryCompliance}</span>
-              <span className="text-[var(--sage-700)] font-medium">WHO PQS E003</span>
+              {/* Expandable Full Verbatim Explanation */}
+              {rawText && (
+                <div className="pt-0.5">
+                  <button
+                    onClick={() => setShowFullExplanation(!showFullExplanation)}
+                    className="text-[10px] font-mono text-[var(--sage-700)] hover:underline flex items-center gap-1 cursor-pointer"
+                  >
+                    {showFullExplanation ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                    <span>{showFullExplanation ? 'Hide full explanation text' : 'Show full explanation text'}</span>
+                  </button>
+                  {showFullExplanation && (
+                    <pre className="mt-1.5 p-2 rounded bg-[var(--paper-100)] border border-[var(--card-border)] text-[10px] font-mono text-[var(--ink-700)] whitespace-pre-wrap leading-relaxed max-h-48 overflow-y-auto">
+                      {rawText}
+                    </pre>
+                  )}
+                </div>
+              )}
+
+              {/* Regulatory Citation & Provenance */}
+              <div className="text-[10px] text-[var(--ink-500)] font-mono flex items-center justify-between border-t border-[var(--card-border)]/40 pt-1.5">
+                <span>Data: Simulated • Risk: {backendExplanation?.risk_level || phc.status}</span>
+                <span className="text-[var(--sage-700)] font-medium">WHO PQS E003</span>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="p-3 rounded-lg border border-[var(--card-border)] bg-[var(--paper-50)] text-xs">
-            <span className="font-medium text-[var(--ink-900)] block">Gemini Natural Language Offline</span>
-            <span className="text-[11px] text-[var(--ink-500)]">
-              Deterministic mathematical solver output remains 100% active and verifiable above.
-            </span>
-          </div>
-        )}
+          );
+        })()}
       </div>
 
       {/* 4. Bottom Human In The Loop Approval Action Bar */}

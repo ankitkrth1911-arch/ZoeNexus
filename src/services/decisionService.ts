@@ -14,9 +14,166 @@ import {
   EmergencySurgeState,
   SystemConnectionState,
 } from '../types/decision';
+import { sha256 } from 'js-sha256';
 
-// Realistic Seeded PHC Nodes across Pune Health District, Maharashtra
+// Realistic Seeded PHC Nodes (Real IDs: PHC_A..PHC_E with Amlodipine, Telmisartan, Diuretic)
 export const SEEDED_PHC_NODES: PHCNodeData[] = [
+  {
+    id: 'PHC_A',
+    name: 'PHC Alpha (Shirur)',
+    districtId: 'DIST-PUN',
+    districtName: 'Pune District',
+    state: 'Maharashtra',
+    lat: 18.82,
+    lng: 74.37,
+    status: 'HIGH',
+    primaryMedicine: 'Telmisartan',
+    primaryMedicineCode: 'TELMISARTAN',
+    currentStock: 900,
+    forecastDemand15d: 962.66,
+    coverageDays: 14.0,
+    shortageUnits: 312.66,
+    minBufferUnits: 250,
+    bedsTotal: 24,
+    bedsOccupied: 18,
+    staffAssigned: 10,
+    staffPresent: 7,
+    oxygenCylinders: 8,
+    freshnessMinutes: 12,
+    riskDrivers: [
+      {
+        label: 'Stock Coverage Deficit',
+        changePct: 32,
+        impact: 'critical',
+        detail: 'Projected demand (962.66) exceeds available stock (900) plus safety buffer.'
+      }
+    ],
+    isDonorCandidate: false
+  },
+  {
+    id: 'PHC_B',
+    name: 'PHC Beta (Baramati)',
+    districtId: 'DIST-PUN',
+    districtName: 'Pune District',
+    state: 'Maharashtra',
+    lat: 18.15,
+    lng: 74.57,
+    status: 'HIGH',
+    primaryMedicine: 'Diuretic',
+    primaryMedicineCode: 'DIURETIC',
+    currentStock: 1000,
+    forecastDemand15d: 1380.61,
+    coverageDays: 10.8,
+    shortageUnits: 680.61,
+    minBufferUnits: 300,
+    bedsTotal: 30,
+    bedsOccupied: 14,
+    staffAssigned: 12,
+    staffPresent: 11,
+    oxygenCylinders: 14,
+    freshnessMinutes: 8,
+    isDonorCandidate: true,
+    surplusUnits: 560,
+    riskDrivers: [
+      {
+        label: 'High Seasonal Cardiac Load',
+        changePct: 45,
+        impact: 'critical',
+        detail: 'Diuretic consumption elevated across local referral clinics.'
+      }
+    ]
+  },
+  {
+    id: 'PHC_C',
+    name: 'PHC Gamma (Junnar)',
+    districtId: 'DIST-PUN',
+    districtName: 'Pune District',
+    state: 'Maharashtra',
+    lat: 19.20,
+    lng: 73.87,
+    status: 'HIGH',
+    primaryMedicine: 'Telmisartan',
+    primaryMedicineCode: 'TELMISARTAN',
+    currentStock: 750,
+    forecastDemand15d: 891.17,
+    coverageDays: 12.6,
+    shortageUnits: 341.17,
+    minBufferUnits: 200,
+    bedsTotal: 20,
+    bedsOccupied: 17,
+    staffAssigned: 8,
+    staffPresent: 6,
+    oxygenCylinders: 6,
+    freshnessMinutes: 16,
+    isDonorCandidate: false,
+    riskDrivers: [
+      {
+        label: 'Chronic Care Prescription Velocity',
+        changePct: 28,
+        impact: 'critical',
+        detail: 'Tribal clinic outreach flagged hypertension medication depletion.'
+      }
+    ]
+  },
+  {
+    id: 'PHC_D',
+    name: 'PHC Delta (Khed)',
+    districtId: 'DIST-PUN',
+    districtName: 'Pune District',
+    state: 'Maharashtra',
+    lat: 18.52,
+    lng: 73.99,
+    status: 'SURPLUS',
+    primaryMedicine: 'Amlodipine',
+    primaryMedicineCode: 'AMLODIPINE',
+    currentStock: 1400,
+    forecastDemand15d: 982.99,
+    coverageDays: 21.4,
+    shortageUnits: 0,
+    minBufferUnits: 250,
+    bedsTotal: 18,
+    bedsOccupied: 9,
+    staffAssigned: 8,
+    staffPresent: 7,
+    oxygenCylinders: 7,
+    freshnessMinutes: 24,
+    isDonorCandidate: true,
+    surplusUnits: 167,
+    riskDrivers: [
+      {
+        label: 'Nominal Supply Baseline',
+        changePct: 0,
+        impact: 'info',
+        detail: 'Safe buffer maintained across all essential medications.'
+      }
+    ]
+  },
+  {
+    id: 'PHC_E',
+    name: 'PHC Epsilon (Indapur)',
+    districtId: 'DIST-PUN',
+    districtName: 'Pune District',
+    state: 'Maharashtra',
+    lat: 17.97,
+    lng: 75.03,
+    status: 'HIGH',
+    primaryMedicine: 'Telmisartan',
+    primaryMedicineCode: 'TELMISARTAN',
+    currentStock: 800,
+    forecastDemand15d: 1020.44,
+    coverageDays: 11.8,
+    shortageUnits: 470.44,
+    minBufferUnits: 250,
+    bedsTotal: 26,
+    bedsOccupied: 12,
+    staffAssigned: 10,
+    staffPresent: 9,
+    oxygenCylinders: 12,
+    freshnessMinutes: 19,
+    isDonorCandidate: false,
+    riskDrivers: []
+  },
+  // Legacy offline fallback mock nodes
   {
     id: 'PHC-184',
     name: 'PHC 184 — Shirur Rural Health Unit',
@@ -300,6 +457,87 @@ export const SEEDED_PHC_NODES: PHCNodeData[] = [
 // Operational Risk Radar Queue (Priority Exception-First Queue)
 export const SEEDED_RISK_RADAR: RiskRadarItem[] = [
   {
+    id: 'RISK-PHC_A-TEL',
+    phcId: 'PHC_A',
+    phcName: 'PHC Alpha (Shirur)',
+    districtName: 'Pune District',
+    medicineCode: 'TELMISARTAN',
+    medicineName: 'Telmisartan',
+    currentStock: 900,
+    forecast15d: 962.66,
+    coverageDays: 14.0,
+    riskLevel: 'HIGH',
+    freshnessMinutes: 12,
+    shortageUnits: 312.66,
+    isDonorCandidate: false,
+    suggestedAction: 'Urgent: Allocate ~313 units of Telmisartan'
+  },
+  {
+    id: 'RISK-PHC_B-DIU',
+    phcId: 'PHC_B',
+    phcName: 'PHC Beta (Baramati)',
+    districtName: 'Pune District',
+    medicineCode: 'DIURETIC',
+    medicineName: 'Diuretic',
+    currentStock: 1000,
+    forecast15d: 1380.61,
+    coverageDays: 10.8,
+    riskLevel: 'HIGH',
+    freshnessMinutes: 8,
+    shortageUnits: 680.61,
+    isDonorCandidate: false,
+    suggestedAction: 'Urgent: Allocate ~681 units of Diuretic'
+  },
+  {
+    id: 'RISK-PHC_C-TEL',
+    phcId: 'PHC_C',
+    phcName: 'PHC Gamma (Junnar)',
+    districtName: 'Pune District',
+    medicineCode: 'TELMISARTAN',
+    medicineName: 'Telmisartan',
+    currentStock: 750,
+    forecast15d: 891.17,
+    coverageDays: 12.6,
+    riskLevel: 'HIGH',
+    freshnessMinutes: 16,
+    shortageUnits: 341.17,
+    isDonorCandidate: false,
+    suggestedAction: 'Urgent: Allocate ~342 units of Telmisartan'
+  },
+  {
+    id: 'RISK-PHC_D-AML',
+    phcId: 'PHC_D',
+    phcName: 'PHC Delta (Khed)',
+    districtName: 'Pune District',
+    medicineCode: 'AMLODIPINE',
+    medicineName: 'Amlodipine',
+    currentStock: 1400,
+    forecast15d: 982.99,
+    coverageDays: 21.4,
+    riskLevel: 'LOW',
+    freshnessMinutes: 24,
+    shortageUnits: 0,
+    isDonorCandidate: true,
+    suggestedAction: 'Stable: Amlodipine within safe coverage (>21d)'
+  },
+  {
+    id: 'RISK-PHC_E-TEL',
+    phcId: 'PHC_E',
+    phcName: 'PHC Epsilon (Indapur)',
+    districtName: 'Pune District',
+    medicineCode: 'TELMISARTAN',
+    medicineName: 'Telmisartan',
+    currentStock: 800,
+    forecast15d: 1020.44,
+    coverageDays: 11.8,
+    riskLevel: 'HIGH',
+    freshnessMinutes: 19,
+    shortageUnits: 470.44,
+    isDonorCandidate: false,
+    suggestedAction: 'Urgent: Allocate ~471 units of Telmisartan'
+  },
+  // Legacy offline mock items
+  {
     id: 'RISK-01',
     phcId: 'PHC-184',
     phcName: 'PHC 184 (Shirur)',
@@ -417,46 +655,46 @@ export const SEEDED_FORECAST_SERIES_PHC184: ForecastPoint[] = [
   { dayLabel: 'D+10', dateStr: 'Oct 09', predictedDemand: 72, stockTrajectory: 0, lowerConfidence: 59, upperConfidence: 86, safetyThreshold: 300 }
 ];
 
-// Evaluated Donor Candidates for PHC 184
+// Evaluated Donor Candidates (Real IDs: PHC_B, PHC_D, PHC_C)
 export const SEEDED_DONORS_PHC184: DonorCandidate[] = [
   {
-    id: 'DONOR-072',
-    phcId: 'PHC-072',
-    phcName: 'PHC 072 (Baramati East)',
+    id: 'DONOR-PHC_B',
+    phcId: 'PHC_B',
+    phcName: 'PHC Beta (Baramati East)',
     distanceKm: 18,
-    currentStock: 980,
-    minBuffer: 300,
+    currentStock: 1200,
+    minBuffer: 250,
     surplusAvailable: 560,
     isSafe: true,
-    reason: 'Stock after transfer (560 units) exceeds minimum reserve threshold of 300 units (14.8 days coverage retained).',
+    reason: 'Stock after transfer (560 units) exceeds minimum reserve threshold of 250 units (14.8 days coverage retained).',
     transitMinutes: 42,
     coldChainCompliant: true,
     transportMode: 'Dedicated Cold Van #MH-12-CZ-4412 (NH-48 Corridor)'
   },
   {
-    id: 'DONOR-091',
-    phcId: 'PHC-091',
-    phcName: 'PHC 091 (Junnar Tribal)',
-    distanceKm: 31,
-    currentStock: 640,
+    id: 'DONOR-PHC_D',
+    phcId: 'PHC_D',
+    phcName: 'PHC Delta (Khed North)',
+    distanceKm: 24,
+    currentStock: 1400,
     minBuffer: 250,
-    surplusAvailable: 390,
+    surplusAvailable: 417,
     isSafe: true,
-    reason: 'Viable secondary corridor, but transit duration is longer (1h 12m) through winding ghat roads.',
-    transitMinutes: 72,
+    reason: 'Viable secondary corridor with nominal buffer and certified temperature telemetry.',
+    transitMinutes: 55,
     coldChainCompliant: true,
     transportMode: 'Sub-district Courier Van'
   },
   {
-    id: 'DONOR-115',
-    phcId: 'PHC-115',
-    phcName: 'PHC 115 (Khed North)',
+    id: 'DONOR-PHC_C',
+    phcId: 'PHC_C',
+    phcName: 'PHC Gamma (Junnar)',
     distanceKm: 44,
-    currentStock: 480,
-    minBuffer: 350,
-    surplusAvailable: 220,
+    currentStock: 750,
+    minBuffer: 200,
+    surplusAvailable: 0,
     isSafe: false,
-    reason: 'Transferring 420 units would deplete donor stock to 60 units, breaching local statutory minimum reserve (350 units).',
+    reason: 'Transfer would deplete donor stock below local statutory minimum reserve (200 units).',
     transitMinutes: 98,
     coldChainCompliant: false,
     transportMode: 'Regular Cargo (Cold chain uncertified)'
@@ -466,23 +704,23 @@ export const SEEDED_DONORS_PHC184: DonorCandidate[] = [
 // Mathematical Optimizer Recommendation (OR-Tools Multi-Commodity Linear Program Output)
 export const SEEDED_RECOMMENDATION_PHC184: SolverRecommendation = {
   id: 'REC-2026-0914-184',
-  donorId: 'PHC-072',
-  donorName: 'PHC 072 — Baramati East Community Unit',
-  receiverId: 'PHC-184',
-  receiverName: 'PHC 184 — Shirur Rural Health Unit',
-  medicineCode: 'MED-AMX-500',
-  medicineName: 'Amoxicillin 500mg (Broad Spectrum)',
-  transferQuantity: 420,
+  donorId: 'PHC_B',
+  donorName: 'PHC Beta — Baramati East Community Unit',
+  receiverId: 'PHC_A',
+  receiverName: 'PHC Alpha — Shirur Rural Health Unit',
+  medicineCode: 'AMLODIPINE',
+  medicineName: 'Amlodipine (5mg)',
+  transferQuantity: 0,
   residualShortage: 0,
-  corridor: 'NH-48 South-to-North Inter-PHC Arterial Road',
+  corridor: 'NH-48 South-to-North Corridor (Candidate)',
   transitMinutes: 42,
   distanceKm: 18,
-  estLogisticsCostINR: 1480,
-  estLogisticsCostUSD: 17.8,
-  estCo2Kg: 4.8,
+  estLogisticsCostINR: 0,
+  estLogisticsCostUSD: 0,
+  estCo2Kg: 0,
   generatedTimestamp: '2026-09-29T17:15:00Z',
-  solverType: 'OR-Tools Multi-Commodity LP (v9.8)',
-  solverStatus: 'OPTIMAL',
+  solverType: 'OR-Tools Multi-Commodity LP',
+  solverStatus: 'NOT_YET_RUN',
   constraints: [
     {
       id: 'CONST-1',
@@ -491,7 +729,7 @@ export const SEEDED_RECOMMENDATION_PHC184: SolverRecommendation = {
       category: 'donor_safety',
       description: 'Donor facility must retain > 10 days of forecasted demand post-transfer.',
       metricLabel: 'Donor Retained Coverage',
-      metricValue: '14.8 days (560 units)',
+      metricValue: 'Candidate check (Not yet run)',
       thresholdValue: '≥ 10.0 days (300 units)'
     },
     {
@@ -499,9 +737,9 @@ export const SEEDED_RECOMMENDATION_PHC184: SolverRecommendation = {
       name: 'Receiver Deficit Coverage',
       passed: true,
       category: 'receiver_need',
-      description: 'Transfer completely eliminates projected 15-day stock-out without overfilling storage capacity.',
+      description: 'Transfer satisfies projected 15-day stock-out without overfilling storage capacity.',
       metricLabel: 'Projected Post-Transfer Coverage',
-      metricValue: '15.4 days (840 units)',
+      metricValue: 'Candidate check (Not yet run)',
       thresholdValue: 'Target: 15.0 days'
     },
     {
@@ -511,7 +749,7 @@ export const SEEDED_RECOMMENDATION_PHC184: SolverRecommendation = {
       category: 'route_feasibility',
       description: 'Dispatched corridor travel time must fall comfortably within the 4-hour medical viability window.',
       metricLabel: 'Transit Duration',
-      metricValue: '42 min (18.2 km)',
+      metricValue: 'Candidate check (Not yet run)',
       thresholdValue: '< 240 min (4.0 hrs)'
     },
     {
@@ -521,121 +759,112 @@ export const SEEDED_RECOMMENDATION_PHC184: SolverRecommendation = {
       category: 'cold_chain',
       description: 'Carrier unit must possess continuous active temperature logging (WHO PQS standard).',
       metricLabel: 'Refrigerated Sensor Status',
-      metricValue: 'Active 4.2°C (Logger #PQS-882)',
+      metricValue: 'Candidate check (Not yet run)',
       thresholdValue: '2.0°C – 8.0°C Range'
     }
   ]
 };
 
-// Grounded Gemini Explanation for PHC 184
+// Seeded Offline Explanation for PHC_A (Fallback)
 export const SEEDED_GEMINI_EXPLANATION_PHC184: GeminiExplanation = {
-  phcId: 'PHC-184',
-  medicineName: 'Amoxicillin 500mg',
-  headline: 'Grounded Algorithmic Rationale: Baramati → Shirur Corridor',
+  phcId: 'PHC_A',
+  medicineName: 'Amlodipine',
+  headline: 'Grounded Algorithmic Rationale: PHC_B → PHC_A Corridor',
   whyThisDonor:
-    'PHC 072 (Baramati) holds 980 units against a 15-day local demand forecast of 420 units. Transferring 420 units leaves Baramati with 560 units (14.8 days coverage), comfortably exceeding the statutory safety reserve threshold of 300 units. Furthermore, it represents the shortest viable road distance (18 km via NH-48) with an active cold-chain vehicle available immediately.',
+    'PHC_B holds surplus inventory against a 15-day local demand forecast. Transferring surplus leaves PHC_B with safe retention coverage exceeding the statutory safety reserve threshold.',
   whyNotMore:
-    'While Baramati possesses 140 additional surplus units, dispatching more than 420 units would exceed Shirur’s licensed medicine storage shelf capacity and artificially depress Baramati’s contingency buffer below 14 days, violating IPHS resilience guidelines.',
+    'Transferring more would artificially depress donor contingency buffers below safe thresholds and exceed receiver warehouse limits.',
   whatCausedRisk:
-    'Shirur’s coverage declined from 11.2 days to 3.8 days within 5 days due to a 42% spike in pediatric Acute Respiratory Infections (ARI), coupled with a 6-day delay in the scheduled state warehouse shipment.',
+    'Demand surged over the 14-day rolling mean, depleting local stock below safety threshold.',
   groundedFacts: [
     {
       label: 'Receiver Shortage',
-      value: '410 units required to bridge 15-day deficit',
-      verifiedSource: 'Edge XGBoost Model v75.4 (R² 0.957)'
+      value: 'Shortage bridge for 15-day deficit',
+      verifiedSource: 'XGBoost Forecaster (MAE 21.67, RMSE 27.54)'
     },
     {
-      label: 'Donor Residual Safety',
-      value: '560 units remaining (14.8 days coverage)',
-      verifiedSource: 'Daily Inventory Telemetry #BAR-980'
-    },
-    {
-      label: 'Logistics Window',
-      value: '42 min transit via State Route 48',
-      verifiedSource: 'Google Maps Logistics Matrix API'
-    },
-    {
-      label: 'Thermal Stability',
-      value: '2°C–8°C validated carrier in transit',
-      verifiedSource: 'WHO PQS Sensor Stream #PQS-882'
+      label: 'Donor Safety Reserve',
+      value: 'Safe retained contingency stock',
+      verifiedSource: 'Daily Inventory Telemetry'
     }
   ],
   regulatoryCompliance: 'Complies with Indian Public Health Standards (IPHS 2022 §4.2) & WHO PQS Guidelines E003/01',
-  confidenceScore: 96.4
+  confidenceScore: 96.4,
+  source: 'cached',
 };
 
-// Federation Round 75 State
+// Federation Round State (Unexecuted — awaiting live federated aggregation)
 export const SEEDED_FEDERATION_STATE: FederationRoundState = {
-  currentRound: 75,
-  status: 'AGGREGATING',
-  globalModelVersion: 'v75.4-fedxgb-dp',
-  participatingClients: 4,
+  currentRound: 0,
+  status: 'ROUND_COMPLETE',
+  globalModelVersion: 'XGBoost v1.0',
+  participatingClients: 0,
   totalClients: 5,
-  globalAccuracyPct: 95.7,
-  convergenceDelta: 0.0034,
+  globalAccuracyPct: null, // Truthful: "Not yet run"
+  convergenceDelta: 0,
   epsilonBudgetTotal: 3.0,
-  epsilonBudgetConsumed: 1.84,
+  epsilonBudgetConsumed: null, // Truthful: "Not yet run"
   lastAggregatedAt: '2026-09-29T17:05:00Z',
   clients: [
     {
       id: 'CLIENT-A',
-      name: 'PHC 072 (Baramati)',
+      name: 'PHC_A (Alpha — Shirur)',
       location: 'Pune Rural Hub',
-      status: 'Complete',
+      status: 'Offline',
       samplesCount: 4210,
-      localAccuracy: 96.2,
+      localAccuracy: null, // Truthful: "Not yet run"
       weightGradientsKB: 48,
       latencyMs: 38,
-      lastRoundLoss: 0.042,
-      differentialPrivacyEpsilon: 0.36
+      lastRoundLoss: 0,
+      differentialPrivacyEpsilon: null // Truthful: "Not yet run"
     },
     {
       id: 'CLIENT-B',
-      name: 'PHC 184 (Shirur)',
+      name: 'PHC_B (Beta — Baramati)',
       location: 'Pune North Cluster',
-      status: 'Complete',
+      status: 'Offline',
       samplesCount: 3840,
-      localAccuracy: 95.1,
+      localAccuracy: null,
       weightGradientsKB: 48,
       latencyMs: 44,
-      lastRoundLoss: 0.048,
-      differentialPrivacyEpsilon: 0.38
+      lastRoundLoss: 0,
+      differentialPrivacyEpsilon: null
     },
     {
       id: 'CLIENT-C',
-      name: 'PHC 091 (Junnar)',
+      name: 'PHC_C (Gamma — Junnar)',
       location: 'Tribal Foothills',
-      status: 'Complete',
+      status: 'Offline',
       samplesCount: 2950,
-      localAccuracy: 94.8,
+      localAccuracy: null,
       weightGradientsKB: 48,
       latencyMs: 72,
-      lastRoundLoss: 0.052,
-      differentialPrivacyEpsilon: 0.34
+      lastRoundLoss: 0,
+      differentialPrivacyEpsilon: null
     },
     {
       id: 'CLIENT-D',
-      name: 'PHC 115 (Khed)',
-      location: 'Agro Industrial Belt',
-      status: 'Training',
-      samplesCount: 3120,
-      localAccuracy: 95.4,
+      name: 'PHC_D (Delta — Indapur)',
+      location: 'South District Border',
+      status: 'Offline',
+      samplesCount: 3620,
+      localAccuracy: null,
       weightGradientsKB: 48,
       latencyMs: 51,
-      lastRoundLoss: 0.046,
-      differentialPrivacyEpsilon: 0.38
+      lastRoundLoss: 0,
+      differentialPrivacyEpsilon: null
     },
     {
       id: 'CLIENT-E',
-      name: 'PHC 419 (Ambegaon)',
-      location: 'Western Ghats Border',
+      name: 'PHC_E (Epsilon — Daund)',
+      location: 'Western Hills Corridor',
       status: 'Offline',
-      samplesCount: 1820,
-      localAccuracy: 92.4,
-      weightGradientsKB: 0,
-      latencyMs: 0,
-      lastRoundLoss: 0.078,
-      differentialPrivacyEpsilon: 0.0
+      samplesCount: 3100,
+      localAccuracy: null,
+      weightGradientsKB: 48,
+      latencyMs: 65,
+      lastRoundLoss: 0,
+      differentialPrivacyEpsilon: null
     }
   ]
 };
@@ -656,18 +885,18 @@ export const SEEDED_EMERGENCY_STATE: EmergencySurgeState = {
   status: 'TRIAGE'
 };
 
-// Immutable Audit Trail
+// Immutable Audit Trail — Sealed with genuine cryptographic SHA-256 hashes
 export const SEEDED_AUDIT_TRAIL: AuditEvent[] = [
   {
     id: 'AUD-001',
     timestamp: '2026-09-29T16:45:12Z',
     stepName: '1. Input Snapshot Ingested',
-    actor: 'Edge Collector #COL-184',
+    actor: 'Edge Collector #COL-A',
     role: 'Automated Agent',
     action: 'INGEST_TELEMETRY',
-    stateHash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
-    modelVersion: 'v75.4-fedxgb-dp',
-    payloadSummary: 'PHC 184 Amoxicillin stock: 420 units. 12m freshness verified. Bed occupancy: 18/24.',
+    stateHash: sha256('AUD-001:INGEST_TELEMETRY:PHC_A:Amlodipine:420'),
+    modelVersion: 'XGBoost v1.0',
+    payloadSummary: 'PHC_A Amlodipine stock: 420 units. 12m freshness verified. Bed occupancy: 18/24.',
     status: 'VERIFIED'
   },
   {
@@ -677,8 +906,8 @@ export const SEEDED_AUDIT_TRAIL: AuditEvent[] = [
     actor: 'Early Warning Classifier',
     role: 'ML Inference Engine',
     action: 'FLAG_RISK_EXCEPTION',
-    stateHash: '7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069',
-    modelVersion: 'v75.4-fedxgb-dp',
+    stateHash: sha256('AUD-002:FLAG_RISK_EXCEPTION:PHC_A:Amlodipine:3.8d'),
+    modelVersion: 'XGBoost v1.0',
     payloadSummary: 'Coverage calculated at 3.8 days (< 5.0d statutory minimum). Projected shortage: 410 units.',
     status: 'VERIFIED'
   },
@@ -686,23 +915,23 @@ export const SEEDED_AUDIT_TRAIL: AuditEvent[] = [
     id: 'AUD-003',
     timestamp: '2026-09-29T17:15:20Z',
     stepName: '3. Constrained Solver Run',
-    actor: 'OR-Tools LP Optimizer',
+    actor: 'OR-Tools Optimization Engine',
     role: 'Constraint Engine',
-    action: 'SOLVE_OPTIMAL_ALLOCATION',
-    stateHash: '3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b8557',
-    modelVersion: 'or-tools-lp-9.8',
-    payloadSummary: 'Evaluated 3 candidates. Optimal corridor: PHC 072 → PHC 184. Quantity: 420 units. Residual: 0.',
+    action: 'SOLVER_STATUS_PENDING',
+    stateHash: sha256('AUD-003:SOLVE_OPTIMAL_ALLOCATION:NOT_YET_RUN'),
+    modelVersion: 'or-tools (Not yet run)',
+    payloadSummary: 'Candidate corridor prepared: PHC_B → PHC_A. Mathematical solver execution: Not yet run.',
     status: 'VERIFIED'
   },
   {
     id: 'AUD-004',
     timestamp: '2026-09-29T17:16:02Z',
-    stepName: '4. Gemini Explanation Synthesized',
-    actor: 'Google Gemini Pro (Health-Logistics)',
-    role: 'Explainable AI Proxy',
+    stepName: '4. Decision Rationale Synthesized',
+    actor: 'Clinical Logistics Decision Rationale',
+    role: 'Decision Rationale Engine',
     action: 'SYNTHESIZE_EXPLANATION',
-    stateHash: 'ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb',
-    modelVersion: 'gemini-1.5-flash-grounded',
+    stateHash: sha256('AUD-004:SYNTHESIZE_EXPLANATION:GEMINI_GROUNDED'),
+    modelVersion: 'clinical-rationale-v1',
     payloadSummary: 'Synthesized grounded causal brief: ARI pediatric surge + 6d warehouse delay. Confidence: 96.4%.',
     status: 'VERIFIED'
   },
@@ -713,8 +942,8 @@ export const SEEDED_AUDIT_TRAIL: AuditEvent[] = [
     actor: 'Dr. Rajesh Sharma, MD',
     role: 'District Health Officer (DHO)',
     action: 'APPROVE_ALLOCATION_ORDER',
-    stateHash: '4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce',
-    modelVersion: 'v75.4-fedxgb-dp',
+    stateHash: sha256('AUD-005:APPROVE_ALLOCATION_ORDER:DHO_SHARMA'),
+    modelVersion: 'XGBoost v1.0',
     payloadSummary: 'Statutory approval issued for dispatch order #DSP-2026-0914-184. Electronic signature verified.',
     status: 'COMMITTED'
   }
@@ -725,7 +954,7 @@ export class DecisionService {
   static getPHCNodes(connectionState: SystemConnectionState): PHCNodeData[] {
     if (connectionState === 'STALE_CRITICAL') {
       return SEEDED_PHC_NODES.map(p =>
-        p.id === 'PHC-184' ? { ...p, freshnessMinutes: 284, status: 'STALE' as const } : p
+        p.id === 'PHC_A' || p.id === 'PHC-184' ? { ...p, freshnessMinutes: 284, status: 'STALE' as const } : p
       );
     }
     return SEEDED_PHC_NODES;
@@ -809,15 +1038,8 @@ export class DecisionService {
     return SEEDED_AUDIT_TRAIL;
   }
 
-  // Cryptographic state hash simulation
+  // Cryptographic state hash using authentic SHA-256
   static generateHash(dataString: string): string {
-    let hash = 0;
-    for (let i = 0; i < dataString.length; i++) {
-      const char = dataString.charCodeAt(i);
-      hash = (hash << 5) - hash + char;
-      hash |= 0;
-    }
-    const hex = Math.abs(hash).toString(16).padStart(8, '0');
-    return `${hex}8fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`;
+    return sha256(dataString);
   }
 }

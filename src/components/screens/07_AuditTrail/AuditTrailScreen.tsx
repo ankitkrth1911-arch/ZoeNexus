@@ -156,8 +156,8 @@ export const AuditTrailScreen: React.FC = () => {
 
           <div className="p-2.5 rounded-lg bg-[var(--paper-50)] border border-[var(--card-border)]">
             <span className="text-[9px] text-[var(--ink-500)] uppercase block">3. Solver Run</span>
-            <span className="font-bold text-[var(--ink-900)] block mt-0.5">OR-Tools LP</span>
-            <span className="text-[9px] text-[var(--status-healthy)]">4/4 Passed</span>
+            <span className="font-bold text-[var(--ink-900)] block mt-0.5">Optimization</span>
+            <span className="text-[9px] text-[var(--ink-500)]">Not yet run</span>
           </div>
 
           <div className="p-2.5 rounded-lg bg-[var(--paper-50)] border border-[var(--card-border)]">
