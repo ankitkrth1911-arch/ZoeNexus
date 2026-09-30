@@ -1,80 +1,90 @@
-import React from 'react';
-import { useCommandStore } from './store/useCommandStore';
-import { Header } from './components/common/Header';
-import { Sidebar } from './components/common/Sidebar';
-import { BottomTicker } from './components/common/BottomTicker';
-import { RightContextDrawer } from './components/common/RightContextDrawer';
-import { CommandPalette } from './components/common/CommandPalette';
-import { ToastContainer } from './components/common/ToastContainer';
+// PHC Federated AI — BRICS Hackathon Track 3: Smart Health & Supply Chain Resilience
+// Canvas-First Command Centre Shell (Zero Navigation Bar: No top nav, no left rail, no tab bar)
+import React, { useEffect } from 'react';
+import { useResilienceStore } from './store/useResilienceStore';
 
-// Screens
-import { OverviewScreen } from './components/overview/OverviewScreen';
-import { LiveMapScreen } from './components/map/LiveMapScreen';
-import { ForecastScreen } from './components/forecast/ForecastScreen';
-import { AlertsScreen } from './components/alerts/AlertsScreen';
-import { RedistributionScreen } from './components/redistribution/RedistributionScreen';
-import { FederatedScreen } from './components/federated/FederatedScreen';
-import { AnomaliesScreen } from './components/anomalies/AnomaliesScreen';
-import { ExplainScreen } from './components/explain/ExplainScreen';
-import { ReportsScreen } from './components/reports/ReportsScreen';
-import { SettingsScreen } from './components/settings/SettingsScreen';
+// Shell Zones
+import { NetworkCanvas } from './components/screens/01_NetworkPulse/NetworkCanvas';
+import { ContextChip } from './components/shell/ContextChip';
+import { LayerControls } from './components/shell/LayerControls';
+import { JumpToPill } from './components/shell/JumpToPill';
+import { DecisionDrawer } from './components/shell/DecisionDrawer';
+
+// Overlay Layers
+import { RiskTray } from './components/shell/RiskTray';
+import { PHCWorkspaceSheet } from './components/screens/03_PHCWorkspace/PHCWorkspaceSheet';
+
+// Full-screen Focus Layers
+import { FederationScreen } from './components/screens/05_Federation/FederationScreen';
+import { EmergencyModeScreen } from './components/screens/06_EmergencyMode/EmergencyModeScreen';
+import { AuditTrailScreen } from './components/screens/07_AuditTrail/AuditTrailScreen';
+
+// Global Overlays
+import { CommandPalette } from './components/shell/CommandPalette';
+import { JudgeWalkthroughModal } from './components/shell/JudgeWalkthroughModal';
+import { ToastContainer } from './components/shell/ToastContainer';
 
 export const App: React.FC = () => {
-  const { activeScreen, isDrawerOpen } = useCommandStore();
+  const { screen, theme, setScreen } = useResilienceStore();
 
-  const renderActiveScreen = () => {
-    switch (activeScreen) {
-      case 'overview':
-        return <OverviewScreen />;
-      case 'map':
-        return <LiveMapScreen />;
-      case 'forecast':
-        return <ForecastScreen />;
-      case 'alerts':
-        return <AlertsScreen />;
-      case 'redistribution':
-        return <RedistributionScreen />;
-      case 'federated':
-        return <FederatedScreen />;
-      case 'anomalies':
-        return <AnomaliesScreen />;
-      case 'explain':
-        return <ExplainScreen />;
-      case 'reports':
-        return <ReportsScreen />;
-      case 'settings':
-        return <SettingsScreen />;
-      default:
-        return <OverviewScreen />;
+  useEffect(() => {
+    // Synchronize daylight medical and night ops themes
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
     }
-  };
+  }, [theme]);
+
+  // Global keyboard shortcuts for rapid judge navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't trigger shortcuts if inside input or textarea
+      if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) {
+        return;
+      }
+
+      if (e.key === 'Escape') {
+        if (screen !== 'pulse') {
+          setScreen('pulse');
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [screen, setScreen]);
 
   return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#0b0f17] text-[#f1f5f9] select-none">
-      {/* 1. Global Navigation Top Header */}
-      <Header />
+    <div className="relative w-screen h-screen overflow-hidden bg-[var(--paper-50)] text-[var(--ink-900)] select-none">
+      {/* 1. Zone 1: NETWORK CANVAS (Fills the entire viewport, home = Network Pulse) */}
+      <NetworkCanvas />
 
-      {/* 2. Main Body: Left Sidebar + Central Screen Canvas + Right Drawer */}
-      <div className="flex-1 flex overflow-hidden relative">
-        {/* Left Collapsible Rail */}
-        <Sidebar />
+      {/* 2. Zone 2: FLOATING CONTEXT CHIP (Top-left, small scope & status) */}
+      <ContextChip />
 
-        {/* Central Canvas */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-[#090d14] relative transition-all">
-          <div className="max-w-[1680px] mx-auto w-full">
-            {renderActiveScreen()}
-          </div>
-        </main>
+      {/* 3. Zone 3: FLOATING LAYER CONTROLS (Top-right, compact controls & persona switcher) */}
+      <LayerControls />
 
-        {/* Right Context Drawer */}
-        <RightContextDrawer />
-      </div>
+      {/* 4. Zone 4: COMMAND PALETTE PILL ("Jump to..." bottom-centre) */}
+      <JumpToPill />
 
-      {/* 3. Bottom Operational Incident Ticker Feed */}
-      <BottomTicker />
+      {/* 5. Zone 5: DECISION DRAWER (Right full-height drawer, opens on selection) */}
+      <DecisionDrawer />
 
-      {/* 4. Global Overlays: ⌘K Command Palette & Toast Notifications */}
+      {/* Layer A: RISK RADAR (Bottom slide-up tray with persistent exception count) */}
+      <RiskTray />
+
+      {/* Layer B: PHC WORKSPACE (Large overlay sheet with breadcrumbs) */}
+      {screen === 'phc' && <PHCWorkspaceSheet />}
+
+      {/* Layer C: Full-Screen Focus Layers (With breadcrumb bar and ESC to return) */}
+      {screen === 'federation' && <FederationScreen />}
+      {screen === 'emergency' && <EmergencyModeScreen />}
+      {screen === 'audit' && <AuditTrailScreen />}
+
+      {/* Global Overlays: ⌘K Command Palette, 60s Tour Modal, and Toast Notifications */}
       <CommandPalette />
+      <JudgeWalkthroughModal />
       <ToastContainer />
     </div>
   );
